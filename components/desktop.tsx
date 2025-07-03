@@ -14,7 +14,7 @@ interface DesktopProps {
   }
 }
 
-export function Desktop({ settings, setSettings, mediaControlsRefs }: DesktopProps) {
+export function Desktop({ settings, mediaControlsRefs }: DesktopProps) {
   if (!mediaControlsRefs) {
     return <div className="video-background">Loading...</div>
   }
@@ -48,9 +48,10 @@ export function Desktop({ settings, setSettings, mediaControlsRefs }: DesktopPro
           backgroundRepeat: 'no-repeat',
           zIndex: -2
         }}
-        onError={(e: any) => {
+        onError={(e: React.SyntheticEvent<HTMLDivElement>) => {
           console.error('Failed to load background:', backgroundImageUrl)
-          e.currentTarget.style.backgroundImage = "url('/assets/backgrounds/coffee_in_rain_by.webp')"
+          const target = e.currentTarget as HTMLDivElement
+          target.style.backgroundImage = "url('/assets/backgrounds/coffee_in_rain_by.webp')"
         }}
       />
 

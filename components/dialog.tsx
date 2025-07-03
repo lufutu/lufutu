@@ -1,6 +1,7 @@
 "use client"
 
 import React from "react"
+import Image from "next/image"
 
 import type { Dialog as DialogType, Settings } from "@/types"
 
@@ -250,9 +251,11 @@ export function PropertiesDialog({ visible, onClose, settings, setSettings }: Pr
                 <div className="flex gap-4">
                   <div className="w-48 h-36 border-2 border-[#424242] bg-[#008080] overflow-hidden">
                     {selectedBackground && (
-                      <img 
-                        src={`/assets/backgrounds/${selectedBackground}`} 
+                      <Image 
+                        src={`/assets/backgrounds/${selectedBackground}`}
                         alt="Preview"
+                        width={192}
+                        height={144}
                         className="w-full h-full object-cover"
                       />
                     )}
@@ -270,9 +273,11 @@ export function PropertiesDialog({ visible, onClose, settings, setSettings }: Pr
                           }`}
                           onClick={() => setSelectedBackground(bg)}
                         >
-                          <img 
-                            src={`/assets/backgrounds/${bg}`} 
+                          <Image 
+                            src={`/assets/backgrounds/${bg}`}
                             alt={bg}
+                            width={192}
+                            height={128}
                             className="w-full h-32 object-cover"
                           />
                           <div className="text-xs p-1 truncate bg-[#c0c0c0]">

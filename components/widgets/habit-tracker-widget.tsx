@@ -1,15 +1,16 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import type { Widget, Settings } from "@/types"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
+import Image from "next/image"
 // Using PNG icons instead of SVG icons
 
 interface HabitTrackerWidgetProps {
   widget: Widget
-  updateWidgetData: (widgetId: string, newData: any) => void
+  updateWidgetData: (widgetId: string, newData: Record<string, unknown>) => void
   settings: Settings
 }
 
@@ -33,7 +34,6 @@ interface HabitData {
 }
 
 export const HabitTrackerWidget = React.memo(({ widget, updateWidgetData }: HabitTrackerWidgetProps) => {
-  const [showAddForm, setShowAddForm] = useState(false)
   const [quickAdd, setQuickAdd] = useState("")
   const [celebrateHabit, setCelebrateHabit] = useState<string | null>(null)
 
@@ -131,7 +131,7 @@ export const HabitTrackerWidget = React.memo(({ widget, updateWidgetData }: Habi
     <div className="widget-content habit-tracker-content">
       <div className="widget-title-bar flex items-center justify-between">
         <span className="widget-title flex items-center">
-          <img src="/assets/icons/Circle_Blue.png" alt="Target" className="inline w-4 h-4 mr-2" />
+          <Image src="/assets/icons/Circle_Blue.png" alt="Target" width={16} height={16} className="inline w-4 h-4 mr-2" />
           <span className="font-semibold">Habits</span>
           {getTotalCompletionsToday() > 0 && (
             <span className="ml-2 text-xs px-2 py-0.5" style={{
@@ -182,7 +182,7 @@ export const HabitTrackerWidget = React.memo(({ widget, updateWidgetData }: Habi
                 height: '32px'
               }}
             >
-              <img src="/assets/icons/Plus_Blue.png" alt="Add" className="w-4 h-4" />
+              <Image src="/assets/icons/Plus_Blue.png" alt="Add" width={16} height={16} className="w-4 h-4" />
             </Button>
           </div>
         </div>
@@ -190,7 +190,7 @@ export const HabitTrackerWidget = React.memo(({ widget, updateWidgetData }: Habi
         {/* Habits List */}
         {data.habits.length === 0 ? (
           <div className="text-center py-8" style={{ color: '#808080' }}>
-            <img src="/assets/icons/Circle_Blue.png" alt="Target" className="w-12 h-12 mx-auto mb-3 opacity-50" />
+            <Image src="/assets/icons/Circle_Blue.png" alt="Target" width={48} height={48} className="w-12 h-12 mx-auto mb-3 opacity-50" />
             <p className="text-sm mb-1">
               No habits yet
             </p>
@@ -219,7 +219,7 @@ export const HabitTrackerWidget = React.memo(({ widget, updateWidgetData }: Habi
                     }}
                     className="absolute top-1 right-1 h-6 w-6 p-0 text-gray-400 hover:text-red-500 z-10"
                   >
-                    <img src="/assets/icons/Letter X_Blue.png" alt="Delete" className="w-3 h-3" />
+                    <Image src="/assets/icons/Letter X_Blue.png" alt="Delete" width={12} height={12} className="w-3 h-3" />
                   </Button>
 
                   <div className="p-2">
@@ -235,7 +235,7 @@ export const HabitTrackerWidget = React.memo(({ widget, updateWidgetData }: Habi
                         className={`h-8 w-8 p-0 text-sm font-medium btn-complete ${completed ? 'completed' : ''
                           }`}
                       >
-                        {completed ? <img src="/assets/icons/Circle_Blue.png" alt="Completed" className="w-4 h-4" /> : habit.emoji}
+                        {completed ? <Image src="/assets/icons/Circle_Blue.png" alt="Completed" width={20} height={20} className="w-5 h-5" /> : habit.emoji}
                       </Button>
 
                       <div className="flex-1">
@@ -291,7 +291,7 @@ export const HabitTrackerWidget = React.memo(({ widget, updateWidgetData }: Habi
           }}>
             <div className="flex items-center justify-between text-xs">
               <span className="leading-tight font-bold text-black">
-                Today's Progress
+                Today&apos;s Progress
               </span>
               <span className="leading-tight font-bold text-black">
                 {getTotalCompletionsToday()}/{data.habits.length}

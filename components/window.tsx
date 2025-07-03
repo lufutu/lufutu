@@ -154,7 +154,7 @@ export const WindowComponent: React.FC<WindowProps> = ({
       <div className="flex items-center justify-between bg-gray-300 px-2 py-1">
         <div className="flex items-center gap-2">
           {window.icon && (
-            <img src={window.icon} alt="" className="w-4 h-4" />
+            <Image src={window.icon} alt="" width={16} height={16} />
           )}
           <span id={`window-title-${window.id}`} className="text-sm font-semibold">
             {window.title}

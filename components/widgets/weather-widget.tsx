@@ -1,9 +1,9 @@
 import type { Widget, Settings } from "@/types"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 
 interface WeatherWidgetProps {
   widget: Widget
-  updateWidgetData: (widgetId: string, newData: any) => void
+  updateWidgetData: (widgetId: string, newData: Record<string, unknown>) => void
   settings: Settings
 }
 
@@ -44,17 +44,6 @@ const getWeatherDescription = (weatherCode: number): string => {
   return "Unknown"
 }
 
-const getRetroWeatherIcon = (weatherCode: number): string => {
-  // Pixel art style ASCII weather icons
-  if (weatherCode === 0) return "█▀▀█\n  ▄▄▄\n█▀▀▀█" // Sun
-  if (weatherCode <= 3) return "  ▄▄▄\n ▄███▄\n▀▀███▀" // Partly cloudy
-  if (weatherCode <= 48) return "▒▒▒▒▒\n▒▒▒▒▒\n▒▒▒▒▒" // Fog
-  if (weatherCode <= 67) return "  ▄▄▄\n ▄███▄\n  ╫╫╫" // Rain
-  if (weatherCode <= 77) return "  ▄▄▄\n ▄███▄\n  ❅❅❅" // Snow
-  if (weatherCode <= 99) return "  ▄▄▄\n ▄███▄\n  ⚡⚡⚡" // Thunder
-  return "  ▄▄▄\n ▄███▄\n▀▀███▀" // Default
-}
-
 export function WeatherWidget({ widget, updateWidgetData }: WeatherWidgetProps) {
   const [weatherData, setWeatherData] = useState<WeatherData>({
     temperature: 0,
@@ -65,7 +54,7 @@ export function WeatherWidget({ widget, updateWidgetData }: WeatherWidgetProps) 
     loading: true
   })
 
-  const fetchWeatherData = async (lat: number, lon: number, locationName?: string) => {
+  const fetchWeatherData = useCallback(async (lat: number, lon: number, locationName?: string) => {
     try {
       setWeatherData(prev => ({ ...prev, loading: true, error: undefined }))
       
@@ -102,9 +91,9 @@ export function WeatherWidget({ widget, updateWidgetData }: WeatherWidgetProps) 
         error: "Failed to load weather"
       }))
     }
-  }
+  }, [widget.id, updateWidgetData])
 
-  const getLocationName = (lat: number, lon: number): string => {
+  const getLocationName = useCallback((lat: number, lon: number): string => {
     // Simple city detection based on coordinates
     const cities = [
       { name: "New York", lat: 40.7128, lon: -74.0060, tolerance: 0.5 },
@@ -138,37 +127,33 @@ export function WeatherWidget({ widget, updateWidgetData }: WeatherWidgetProps) 
     }
     
     return `${lat.toFixed(2)}°, ${lon.toFixed(2)}°`
-  }
-
-  const getCurrentLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords
-          const locationName = getLocationName(latitude, longitude)
-          fetchWeatherData(latitude, longitude, locationName)
-        },
-        () => {
-          // Default to New York if geolocation fails
-          fetchWeatherData(40.7128, -74.0060, "New York")
-        }
-      )
-    } else {
-      // Default location if geolocation not supported
-      fetchWeatherData(40.7128, -74.0060, "New York")
-    }
-  }
+  }, [])
 
   useEffect(() => {
+    const getCurrentLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords
+            const locationName = getLocationName(latitude, longitude)
+            fetchWeatherData(latitude, longitude, locationName)
+          },
+          () => {
+            // Default to New York if geolocation fails
+            fetchWeatherData(40.7128, -74.0060, "New York")
+          }
+        )
+      } else {
+        // Default location if geolocation not supported
+        fetchWeatherData(40.7128, -74.0060, "New York")
+      }
+    }
     getCurrentLocation()
-    
-    // Refresh weather every 10 minutes
     const interval = setInterval(() => {
       getCurrentLocation()
     }, 600000)
-    
     return () => clearInterval(interval)
-  }, [])
+  }, [fetchWeatherData, getLocationName, widget.id, updateWidgetData])
 
   return (
     <div className="widget-content weather-widget-content retro-weather">
@@ -243,3 +228,5 @@ export function WeatherWidget({ widget, updateWidgetData }: WeatherWidgetProps) 
     </div>
   )
 }
+
+WeatherWidget.displayName = "WeatherWidget"

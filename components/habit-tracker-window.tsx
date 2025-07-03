@@ -57,7 +57,6 @@ export const HabitTrackerWindow: React.FC<HabitTrackerWindowProps> = ({ onComple
     habits: [],
     weeklyReflection: { lastWeek: null, reflection: "" }
   })
-  const [showAddForm, setShowAddForm] = useState(false)
   const [quickAdd, setQuickAdd] = useState("")
   const [celebrateHabit, setCelebrateHabit] = useState<string | null>(null)
 
@@ -209,7 +208,13 @@ export const HabitTrackerWindow: React.FC<HabitTrackerWindowProps> = ({ onComple
                 border: '1px solid rgba(255, 255, 255, 0.2)'
               }}
             >
-              <img src="/assets/icons/Plus_Blue.png" alt="Add" className="w-4 h-4" />
+              <Image
+                src="/assets/icons/Plus_Blue.png"
+                alt="Add"
+                width={16}
+                height={16}
+                className="w-4 h-4"
+              />
             </Button>
           </div>
         </div>
@@ -217,11 +222,12 @@ export const HabitTrackerWindow: React.FC<HabitTrackerWindowProps> = ({ onComple
         {/* Habits List */}
         {data.habits.length === 0 ? (
           <div className="text-center py-8 text-white/70">
-            <img
+            <Image
               src="/assets/icons/Circle_Blue.png"
               alt="Target"
+              width={48}
+              height={48}
               className="w-12 h-12 mx-auto mb-3 opacity-50"
-
             />
             <p className="text-base mb-1">
               No habits yet
@@ -246,9 +252,11 @@ export const HabitTrackerWindow: React.FC<HabitTrackerWindowProps> = ({ onComple
                     onClick={() => handleDeleteHabit(habit.id)}
                     className="absolute top-1 right-1 h-6 w-6 p-0 text-white/70 hover:text-red-400 z-10"
                   >
-                    <img
+                    <Image
                       src="/assets/icons/Letter X_Blue.png"
                       alt="Delete"
+                      width={12}
+                      height={12}
                       className="w-3 h-3"
                     />
                   </Button>
@@ -264,9 +272,11 @@ export const HabitTrackerWindow: React.FC<HabitTrackerWindowProps> = ({ onComple
                         style={{ border: '1px solid rgba(255, 255, 255, 0.2)' }}
                       >
                         {completed ? (
-                          <img
+                          <Image
                             src="/assets/icons/Circle_Blue.png"
                             alt="Completed"
+                            width={20}
+                            height={20}
                             className="w-5 h-5"
                           />
                         ) : habit.emoji}
@@ -289,7 +299,7 @@ export const HabitTrackerWindow: React.FC<HabitTrackerWindowProps> = ({ onComple
                         <div className="flex items-center gap-1">
                           <span className="text-base">🔥</span>
                           <span className="text-white/70 font-bold">
-                            {streak} day{streak !== 1 ? 's' : ''}
+                            {streak} day{streak !== 1 ? "&apos;s" : ""}
                           </span>
                         </div>
 
@@ -324,7 +334,7 @@ export const HabitTrackerWindow: React.FC<HabitTrackerWindowProps> = ({ onComple
           }}>
             <div className="flex items-center justify-between text-sm">
               <span className="text-white/70">
-                Today's Progress
+                Today&apos;s Progress
               </span>
               <span className="text-white/70">
                 {getTotalCompletionsToday()}/{data.habits.length}

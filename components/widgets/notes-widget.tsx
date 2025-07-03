@@ -5,7 +5,7 @@ import Image from "next/image"
 
 interface NotesWidgetProps {
   widget: Widget
-  updateWidgetData: (widgetId: string, newData: any) => void
+  updateWidgetData: (widgetId: string, newData: Record<string, unknown>) => void
   settings: Settings
 }
 

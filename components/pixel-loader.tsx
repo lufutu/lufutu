@@ -3,7 +3,8 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { DitheringPattern } from './dithering-pattern'
 import { preloadAllAssets, type PreloadProgress } from '@/lib/asset-preloader'
-import { APP_ASSETS, ASSET_CATEGORIES, getTotalAssetCount } from '@/lib/app-assets'
+import { ASSET_CATEGORIES } from '@/lib/app-assets'
+import Image from "next/image"
 
 interface LoadingStep {
   name: string
@@ -63,8 +64,6 @@ export function PixelLoader({ onComplete }: PixelLoaderProps) {
 
   // Preload all assets using the new utility
   const preloadAssets = useCallback(async () => {
-    const totalAssets = getTotalAssetCount()
-
     const updateProgress = (stepIndex: number, progress: number, status: 'loading' | 'complete' | 'error') => {
       setSteps(prev => prev.map((step, i) => 
         i === stepIndex ? { ...step, progress, status } : step
@@ -194,14 +193,10 @@ export function PixelLoader({ onComplete }: PixelLoaderProps) {
       }
 
             // Start typing animation and store cleanup function
-      let isTyping = true
-      typeText().catch(console.error).finally(() => {
-        isTyping = false
-      })
+      typeText().catch(console.error)
 
       // Cleanup function to prevent state updates if component unmounts
       return () => {
-        isTyping = false
       }
   }, [])
 
@@ -236,9 +231,11 @@ export function PixelLoader({ onComplete }: PixelLoaderProps) {
         {/* Logo section */}
         <div className="mb-4 md:mb-8">
           <div className="flex items-center justify-center mb-4">
-            <img 
-              src="/assets/icons/lufutu.png" 
-              alt="Lufutu Logo" 
+            <Image
+              src="/assets/icons/lufutu.png"
+              alt="Lufutu Logo"
+              width={48}
+              height={48}
               className="w-12 h-12 md:w-16 md:h-16 mr-2 md:mr-4"
               style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.5))' }}
             />

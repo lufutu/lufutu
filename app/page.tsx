@@ -36,7 +36,7 @@ export default function RetroPortfolio() {
   } = useDesktopState()
 
 
-  const { dragState, handleMouseDown } = useDragAndDrop({
+  const { handleMouseDown } = useDragAndDrop({
     desktopIcons,
     setDesktopIcons,
     widgets,
@@ -106,7 +106,6 @@ export default function RetroPortfolio() {
   const memoizedDesktop = useMemo(() => (
     <Desktop 
       settings={settings} 
-      setSettings={setSettings} 
       mediaControlsRefs={{
         iframeRef,
         audioRef,
@@ -117,7 +116,7 @@ export default function RetroPortfolio() {
         isUsingYoutube
       }}
     />
-  ), [settings, setSettings, iframeRef, audioRef, getYouTubeEmbedUrl, handleIframeError, isLoaded, hasError, isUsingYoutube])
+  ), [settings, iframeRef, audioRef, getYouTubeEmbedUrl, handleIframeError, isLoaded, hasError, isUsingYoutube])
 
   // Show loader during initial load
   if (isLoading) {
@@ -160,9 +159,6 @@ export default function RetroPortfolio() {
           setWindows={setWindows}
           nextZIndex={nextZIndex}
           setNextZIndex={setNextZIndex}
-          handleMouseDown={handleMouseDown}
-          desktopIcons={desktopIcons}
-          setDesktopIcons={setDesktopIcons}
         />
 
         <Taskbar 

@@ -22,7 +22,7 @@ export const preloadImages = async (
     errors: []
   }
 
-  const promises = urls.map(async (url, index) => {
+  const promises = urls.map(async (url) => {
     try {
       await new Promise<void>((resolve, reject) => {
         const img = new Image()
@@ -219,7 +219,7 @@ export const preloadAllAssets = async (
   }
 
   // Load all asset types in parallel
-  const promises: Promise<any>[] = []
+  const promises: Promise<unknown>[] = []
 
   if (assets.images?.length) {
     promises.push(preloadImages(assets.images, updateOverallProgress))

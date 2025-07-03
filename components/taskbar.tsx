@@ -6,6 +6,7 @@ import type { Window, Settings } from "@/types"
 import { DitheringPattern } from "./dithering-pattern"
 import { APP_CONTENT } from "@/lib/window-content"
 import { PropertiesDialog } from "./dialog"
+import Image from "next/image"
 
 interface MenuItem {
   id?: string;
@@ -23,7 +24,7 @@ const START_MENU_ITEMS: MenuItem[] = [
     icon: "/assets/icons/programs.png",
     type: "submenu",
     items: Object.entries(APP_CONTENT)
-      .filter(([key, config]) => config.type === "program")
+      .filter(([, config]) => config.type === "program")
       .map(([key, config]) => ({
         id: key,
         label: config.title,
@@ -281,9 +282,11 @@ export const Taskbar = ({ windows, setWindows, setNextZIndex, mediaControls, set
 
               {/* Window Icon */}
               {window.icon ? (
-                <img 
-                  src={window.icon} 
+                <Image
+                  src={window.icon}
                   alt={`${window.title} icon`}
+                  width={16}
+                  height={16}
                   className="w-4 h-4 mr-2 flex-shrink-0 object-contain"
                 />
               ) : (
@@ -417,9 +420,11 @@ export const Taskbar = ({ windows, setWindows, setNextZIndex, mediaControls, set
             }}
           >
             <div className="w-16 h-16 bg-white rounded-sm flex items-center justify-center p-1">
-              <img 
+              <Image
                 src="/assets/icons/lufutu.png"
                 alt="Logo"
+                width={32}
+                height={32}
                 className="w-full h-full object-contain"
               />
             </div>
@@ -448,9 +453,11 @@ export const Taskbar = ({ windows, setWindows, setNextZIndex, mediaControls, set
                     onClick={() => !hasSubmenu && handleStartMenuItem(item)}
                   >
                     {item.icon && (
-                      <img 
-                        src={item.icon} 
+                      <Image
+                        src={item.icon}
                         alt={item.label || ""}
+                        width={32}
+                        height={32}
                         className="w-8 h-8 object-contain"
                       />
                     )}
@@ -475,9 +482,11 @@ export const Taskbar = ({ windows, setWindows, setNextZIndex, mediaControls, set
                           onClick={() => handleStartMenuItem(subItem)}
                         >
                           {subItem.icon && (
-                            <img 
-                              src={subItem.icon} 
+                            <Image
+                              src={subItem.icon}
                               alt={subItem.label || ""}
+                              width={32}
+                              height={32}
                               className="w-8 h-8 object-contain"
                             />
                           )}

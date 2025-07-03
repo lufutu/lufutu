@@ -79,8 +79,8 @@ export function useDragAndDrop({
         targetId,
         startX: e.clientX,
         startY: e.clientY,
-        startTargetX: icon.x,
-        startTargetY: icon.y,
+        startTargetX: icon.x || 0,
+        startTargetY: icon.y || 0,
       })
     } else if (type === "widget") {
       const widget = widgets.find((w) => w.id === targetId)

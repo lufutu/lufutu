@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect, useCallback } from "react"
 import type { DesktopIcon } from "@/types"
 import { getDesktopIcons } from "@/lib/window-content"
+import Image from "next/image"
 
 interface DesktopIconsProps {
   handleIconDoubleClick: (iconId: string) => void
@@ -32,7 +33,7 @@ export const DesktopIcons: React.FC<DesktopIconsProps> = ({
   const GRID_CELL_SPACING = 20 // Horizontal spacing between grid cells
   const TASKBAR_HEIGHT = 40 // Height of the taskbar
 
-  const snapToGrid = (x: number, y: number) => {
+  const snapToGrid = React.useCallback((x: number, y: number) => {
     // Get desktop bounds
     const desktop = desktopRef.current?.getBoundingClientRect()
     if (!desktop) return { row: 0, column: 0 }
@@ -42,7 +43,7 @@ export const DesktopIcons: React.FC<DesktopIconsProps> = ({
     const row = Math.max(0, Math.floor(y / GRID_CELL_SIZE))
 
     return { row, column }
-  }
+  }, [])
 
   const handleIconMouseDown = (e: React.MouseEvent, icon: DesktopIcon) => {
     e.preventDefault()
@@ -103,7 +104,7 @@ export const DesktopIcons: React.FC<DesktopIconsProps> = ({
     handleMouseDown(e as unknown as React.MouseEvent, "icon", icon.id)
   }
 
-  const handleMouseMove = (e: MouseEvent | TouchEvent) => {
+  const handleMouseMove = React.useCallback((e: MouseEvent | TouchEvent) => {
     if (!draggingIcon || !desktopRef.current) return
 
     const desktop = desktopRef.current.getBoundingClientRect()
@@ -124,11 +125,11 @@ export const DesktopIcons: React.FC<DesktopIconsProps> = ({
       }
       return icon
     }))
-  }
+  }, [draggingIcon, dragOffset, snapToGrid])
 
-  const handleMouseUp = () => {
+  const handleMouseUp = React.useCallback(() => {
     setDraggingIcon(null)
-  }
+  }, [])
 
   // Handle clicking outside icons to deselect
   const handleDesktopClick = (e: React.MouseEvent) => {
@@ -162,7 +163,7 @@ export const DesktopIcons: React.FC<DesktopIconsProps> = ({
         window.removeEventListener('touchend', handleMouseUp)
       }
     }
-  }, [draggingIcon, dragOffset])
+  }, [draggingIcon, dragOffset, handleMouseMove, handleMouseUp])
 
   return (
     <div 
@@ -199,9 +200,11 @@ export const DesktopIcons: React.FC<DesktopIconsProps> = ({
             role="button"
             aria-label={icon.label}
           >
-            <img
+            <Image
               src={icon.icon}
               alt={icon.label}
+              width={64}
+              height={64}
               className="w-16 h-16 mb-1"
               style={{ imageRendering: "pixelated" }}
               draggable={false}

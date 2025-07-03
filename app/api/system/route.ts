@@ -17,7 +17,7 @@ async function getSystemInfo() {
     
     // Get disk usage
     const diskInfo = await si.fsSize()
-    const primaryDisk = diskInfo[0] || diskInfo.find((disk: any) => disk.mount === '/' || disk.mount === 'C:')
+    const primaryDisk = diskInfo[0] || diskInfo.find((disk: { mount: string; used: number; size: number }) => disk.mount === '/' || disk.mount === 'C:')
     const diskUsage = primaryDisk ? Math.round((primaryDisk.used / primaryDisk.size) * 100) : 0
     
     return {
@@ -42,7 +42,7 @@ async function getSystemInfo() {
     let diskUsage = 50 // Default fallback
     try {
       if (process.platform !== 'win32') {
-        const stats = await fs.stat('/')
+        await fs.stat('/') // Just check if accessible
         // This is a very basic approximation
         diskUsage = Math.random() * 30 + 40 // Simulated reasonable disk usage
       }

@@ -7,6 +7,8 @@ export interface DesktopIcon {
     column: number
   }
   selected?: boolean
+  x?: number
+  y?: number
 }
 
 export interface Widget {

@@ -87,13 +87,14 @@ export function GameManager({
   // Expose game function to window for backward compatibility
   React.useEffect(() => {
     console.log("GameManager: Setting up window.gameManager")
-    ;(window as any).gameManager = {
+    const globalWindow = window as typeof window & { gameManager?: { openGame: (gameType: string) => void } }
+    globalWindow.gameManager = {
       openGame: openGameWindow,
     }
 
     return () => {
       console.log("GameManager: Cleaning up window.gameManager")
-      delete (window as any).gameManager
+      delete globalWindow.gameManager
     }
   }, [openGameWindow])
 

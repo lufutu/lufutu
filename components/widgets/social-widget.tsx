@@ -3,7 +3,7 @@ import Image from "next/image"
 
 interface SocialWidgetProps {
   widget: Widget
-  updateWidgetData: (widgetId: string, newData: any) => void
+  updateWidgetData: (widgetId: string, newData: Record<string, unknown>) => void
   settings: Settings
 }
 
@@ -34,7 +34,7 @@ export function SocialWidget({ widget }: SocialWidgetProps) {
         </span>
       </div>
       <div className="social-main">
-        {widget.data.profiles.map((profile: any, index: number) => (
+        {widget.data.profiles.map((profile: { name: string; url: string; icon: string; color: string; }, index: number) => (
           <div 
             key={index} 
             className="social-profile cursor-pointer hover:bg-gray-100" 

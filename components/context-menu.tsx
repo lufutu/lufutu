@@ -2,7 +2,7 @@
 
 import React from "react"
 
-import type { ContextMenu as ContextMenuType, Settings, Widget } from "@/types"
+import type { ContextMenu as ContextMenuType, Settings, Widget, Dialog } from "@/types"
 import { PropertiesDialog } from "./dialog"
 
 interface ContextMenuProps {
@@ -11,7 +11,7 @@ interface ContextMenuProps {
   settings: Settings
   setSettings: React.Dispatch<React.SetStateAction<Settings>>
   setWidgets: React.Dispatch<React.SetStateAction<Widget[]>>
-  setDialog: React.Dispatch<React.SetStateAction<any>>
+  setDialog: React.Dispatch<React.SetStateAction<Dialog>>
 }
 
 export function ContextMenu({

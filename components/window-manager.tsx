@@ -166,7 +166,7 @@ export const WindowManager: React.FC<WindowManagerProps> = ({
         })
       }
     }
-  }, [windows])
+  }, [windows, setDragState])
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -215,7 +215,7 @@ export const WindowManager: React.FC<WindowManagerProps> = ({
       w.id === windowId ? { ...w, zIndex: nextZIndex } : w
     ))
     setNextZIndex(prev => prev + 1)
-  }, [nextZIndex, setNextZIndex])
+  }, [nextZIndex, setNextZIndex, setWindows])
 
   return (
     <>

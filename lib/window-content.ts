@@ -369,7 +369,7 @@ export const getWindowConfig = (type: string): WindowContentConfig => {
 // Helper function to get desktop icons configuration
 export const getDesktopIcons = (): DesktopIcon[] => {
   return Object.entries(APP_CONTENT)
-    .filter(([_, config]) => config.desktopIcon)
+    .filter(([, config]) => config.desktopIcon)
     .map(([id, config]) => {
       if (!config.desktopIcon?.gridPosition) {
         console.warn(`Icon ${id} is missing grid position, using default position`)

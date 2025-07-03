@@ -45,7 +45,8 @@ export function GamesWindow({ onGameSelect }: GamesWindowProps) {
 
   const handleGameClick = (gameType: string) => {
     console.log(`Game clicked: ${gameType}`)
-    console.log("GameManager available:", !!(window as any).gameManager)
+    const globalWindow = window as typeof window & { gameManager?: { openGame: (gameType: string) => void } }
+    console.log("GameManager available:", !!globalWindow.gameManager)
     onGameSelect(gameType)
   }
 

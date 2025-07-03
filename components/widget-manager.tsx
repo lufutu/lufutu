@@ -25,7 +25,7 @@ export const WidgetManager = React.memo(({ widgets, setWidgets, handleMouseDown,
   const hitCounterTimeRef = useRef<number>(0)
   const isDocumentVisibleRef = useRef<boolean>(true)
 
-  const updateWidgetData = useCallback((widgetId: string, newData: any) => {
+  const updateWidgetData = useCallback((widgetId: string, newData: Record<string, unknown>) => {
     setWidgets((prev) => prev.map((w) => (w.id === widgetId ? { ...w, data: { ...w.data, ...newData } } : w)))
   }, [setWidgets])
 

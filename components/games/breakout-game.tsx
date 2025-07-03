@@ -178,7 +178,6 @@ export function BreakoutGame({ onScore }: BreakoutGameProps) {
       }
 
       // Ball collision with bricks
-      let hitBrick = false
       for (let i = 0; i < bricks.length; i++) {
         const brick = bricks[i]
         if (brick.destroyed) continue
@@ -189,7 +188,6 @@ export function BreakoutGame({ onScore }: BreakoutGameProps) {
             ball.y <= brick.y + brick.height) {
           
           brick.destroyed = true
-          hitBrick = true
           
           setScore(prev => {
             const newScore = prev + brick.points

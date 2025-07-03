@@ -6,11 +6,11 @@ import Image from "next/image"
 
 interface ClockWidgetProps {
   widget: Widget
-  updateWidgetData: (widgetId: string, newData: any) => void
+  updateWidgetData: (widgetId: string, newData: Record<string, unknown>) => void
   settings: Settings
 }
 
-export const ClockWidget = React.memo(({ widget }: ClockWidgetProps) => {
+export const ClockWidget = React.memo(({}: ClockWidgetProps) => {
   const [currentTime, setCurrentTime] = useState<Date | null>(null)
   const [isHydrated, setIsHydrated] = useState(false)
 
@@ -67,3 +67,5 @@ export const ClockWidget = React.memo(({ widget }: ClockWidgetProps) => {
     </div>
   )
 })
+
+ClockWidget.displayName = "ClockWidget"

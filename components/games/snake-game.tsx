@@ -120,7 +120,7 @@ export function SnakeGame({ onScore }: SnakeGameProps) {
 
       return newSnake
     })
-  }, [isPlaying, gameOver, direction, food, score, generateFood, onScore, handleGameOver])
+  }, [direction, food, score, generateFood, onScore, handleGameOver])
 
   // Game loop
   useEffect(() => {

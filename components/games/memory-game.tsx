@@ -3,6 +3,7 @@
 import { useEffect, useCallback, useState } from "react"
 import Image from "next/image"
 import { getHighScores, saveHighScore, isHighScore, formatScore } from "@/lib/high-scores"
+import React from "react"
 
 interface MemoryGameProps {
   onScore?: (score: number) => void
@@ -27,16 +28,15 @@ export function MemoryGame({ onScore }: MemoryGameProps) {
   const [highScores, setHighScores] = useState(getHighScores(GAME_NAME))
   const [isNewHighScore, setIsNewHighScore] = useState(false)
 
-  const symbols = [
+  const symbols = React.useMemo(() => [
     "/assets/icons/Controller_Blue.png",
-    "/assets/icons/Circle_Blue.png", 
     "/assets/icons/Letter D Yellow_Blue.png",
     "/assets/icons/Letter C_Blue.png",
     "/assets/icons/Letter A_Blue.png",
     "/assets/icons/Letter M Yellow_Blue.png",
     "/assets/icons/Letter G Black_Blue.png",
     "/assets/icons/Letter S Yellow_Blue.png"
-  ]
+  ], [])
 
   const calculateScore = useCallback((moves: number) => {
     // Better score for fewer moves - max score 1000, minimum 16 moves to win
@@ -62,7 +62,7 @@ export function MemoryGame({ onScore }: MemoryGameProps) {
     setGameWon(false)
     setIsProcessing(false)
     setIsNewHighScore(false)
-  }, [])
+  }, [symbols])
 
   const handleGameWin = useCallback((finalMoves: number) => {
     const finalScore = calculateScore(finalMoves)
