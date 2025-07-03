@@ -1,10 +1,12 @@
 export interface DesktopIcon {
   id: string
-  label: string
   icon: string
-  x: number
-  y: number
-  selected: boolean
+  label: string
+  gridPosition: {
+    row: number
+    column: number
+  }
+  selected?: boolean
 }
 
 export interface Widget {
@@ -21,6 +23,7 @@ export interface Widget {
 export interface Window {
   id: string
   title: string
+  icon?: string
   content: string
   contentComponent?: React.ReactNode
   x: number

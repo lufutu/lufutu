@@ -2,21 +2,25 @@
 
 import { useState } from "react"
 import type { DesktopIcon, Widget, Window, ContextMenu, Dialog, Settings } from "@/types"
-import { getWindowContent } from "@/lib/window-content"
+import { getWindowContent, getWindowConfig } from "@/lib/window-content"
 
 export function useDesktopState() {
-  const [desktopIcons, setDesktopIcons] = useState<DesktopIcon[]>([
-    { id: "home", label: "Home", icon: "/assets/icons/home.png", x: 20, y: 80, selected: false },
-    { id: "work", label: "Work", icon: "/assets/icons/work.png", x: 20, y: 160, selected: false },
-    { id: "blog", label: "Blog", icon: "/assets/icons/blog.png", x: 20, y: 240, selected: false },
-    { id: "services", label: "Services", icon: "/assets/icons/service.png", x: 20, y: 320, selected: false },
-    { id: "art", label: "Art", icon: "/assets/icons/art.png", x: 20, y: 400, selected: false },
-    { id: "about", label: "About", icon: "/assets/icons/about.png", x: 20, y: 480, selected: false },
-    { id: "contact", label: "Contact", icon: "/assets/icons/contact.png", x: 20, y: 560, selected: false },
-    { id: "browser", label: "Browser", icon: "/assets/icons/browser.png", x: 120, y: 160, selected: false },
-    { id: "games", label: "Games", icon: "/assets/icons/game.png", x: 120, y: 80, selected: false },
-    { id: "habits", label: "Habits", icon: "/assets/icons/Circle_Blue.png", x: 120, y: 240, selected: false },
-  ])
+  const [desktopIcons, setDesktopIcons] = useState<DesktopIcon[]>(() => {
+    const configs = [
+      "home", "blog", "work", "about", "contact", 
+      "games", "art", "browser", "services", "habits"
+    ].map(type => {
+      const config = getWindowConfig(type)
+      return {
+        id: type,
+        label: config.desktopIcon?.label || config.title,
+        icon: config.icon,
+        gridPosition: config.desktopIcon?.gridPosition || { row: 0, column: 0 },
+        selected: false
+      }
+    })
+    return configs
+  })
 
   const [widgets, setWidgets] = useState<Widget[]>([
     {
@@ -145,21 +149,7 @@ export function useDesktopState() {
     // },
   ])
 
-  const [windows, setWindows] = useState<Window[]>([
-    {
-      id: "home-default",
-      title: "Home",
-      content: getWindowContent("home"),
-      x: 300,
-      y: 150,
-      width: 600,
-      height: 400,
-      isMinimized: false,
-      isMaximized: false,
-      zIndex: 1001,
-      originalBounds: undefined,
-    },
-  ])
+  const [windows, setWindows] = useState<Window[]>([])
 
   const [contextMenu, setContextMenu] = useState<ContextMenu>({ visible: false, x: 0, y: 0 })
 

@@ -37,5 +37,6 @@ Follow these rules when you write code:
 - Alwasy use retro and cozy stlye of old Windows 95,98 and pixel art vibes for UI, or aseprite app
 - Color Palettes try to make like AdamCYounis https://lospec.com/adamcyounis
 - Make UX best for user can easy to use
+- Never user 'MS Sans Serif, sans-serif' font family
 
 DO NOT RUN `NPM/BUN DEV`, in nessesary case ask me please!

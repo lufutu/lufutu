@@ -74,6 +74,7 @@ export function Desktop({ settings, setSettings, mediaControlsRefs }: DesktopPro
           src="/assets/sounds/lofi-girl.mp3"
           preload="metadata"
           playsInline
+          loop
           crossOrigin="anonymous"
           onLoadStart={() => console.log('Audio loading started')}
           onLoadedMetadata={() => console.log('Audio metadata loaded')}

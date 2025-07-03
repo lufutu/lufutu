@@ -158,7 +158,6 @@ export function PixelLoader({ onComplete }: PixelLoaderProps) {
     useEffect(() => {
       const bootSequence = [
         'Lufutu Retro System v1.0',
-        'Copyright © 2025 Lufutu Digital',
         '',
         'System Check:',
         '  Memory........640K OK',
@@ -233,148 +232,84 @@ export function PixelLoader({ onComplete }: PixelLoaderProps) {
       <DitheringPattern pattern="fine" opacity={0.1} />
       
       {/* Main loading content */}
-      <div className="relative z-10 text-center">
+      <div className="relative z-10 text-center max-w-[90vw] md:max-w-[600px] p-4">
         {/* Logo section */}
-        <div className="mb-8">
+        <div className="mb-4 md:mb-8">
           <div className="flex items-center justify-center mb-4">
             <img 
               src="/assets/icons/Controller_Blue.png" 
               alt="Lufutu Logo" 
-              className="w-16 h-16 mr-4"
+              className="w-12 h-12 md:w-16 md:h-16 mr-2 md:mr-4"
               style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.5))' }}
             />
             <div className="text-left">
               <h1 
-                className="text-2xl font-bold text-white mb-1"
+                className="text-lg md:text-2xl font-bold text-white mb-1"
                 style={{
                   textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
                 }}
               >
-                Lufutu
+                Lufutu OS
               </h1>
               <p 
-                className="text-sm text-gray-200"
+                className="text-xs md:text-sm text-white/90"
                 style={{
                   textShadow: '1px 1px 2px rgba(0,0,0,0.8)',
                 }}
               >
-                Retro Digital Experience
+                Version 1.0 • Starting OS Style Experience
               </p>
             </div>
           </div>
-        </div>
 
-        {/* Loading progress section */}
-        <div className="w-80 mx-auto">
-          {/* Current loading step */}
-          {currentStepData && (
-            <div className="mb-4">
-              <p 
-                className="text-white text-sm mb-2"
-                style={{
-                  textShadow: '1px 1px 2px rgba(0,0,0,0.8)',
-                }}
-              >
-                {currentStepData.message}{loadingDots}
-              </p>
-            </div>
-          )}
-
-          {/* Progress bar container */}
+          {/* Boot text terminal */}
           <div 
-            className="w-full p-3 mb-4"
+            className="bg-black/80 border border-white/20 rounded p-3 md:p-4 mb-4 md:mb-6 text-left"
             style={{
-              background: 'linear-gradient(145deg, #f0f0f0 0%, #e0e0e0 100%)',
-              border: '2px inset #d4d4d4',
-              borderRadius: '2px'
+              boxShadow: '0 4px 6px rgba(0,0,0,0.2)',
             }}
           >
-            {/* Progress percentage */}
-            <div className="flex items-center justify-between mb-2">
-              <span 
-                className="text-xs"
-                style={{
-                  color: '#000000',
-                }}
-              >
-                Loading Progress
+            <pre 
+              className="text-[10px] md:text-xs text-green-400 font-mono whitespace-pre-wrap"
+              style={{
+                textShadow: '0 0 8px rgba(74, 222, 128, 0.4)',
+                lineHeight: '1.5',
+              }}
+            >
+              {bootText}{showCursor ? '_' : ' '}
+            </pre>
+          </div>
+
+          {/* Loading progress */}
+          <div className="space-y-2 md:space-y-3">
+            <div className="flex items-center justify-between text-white">
+              <span className="text-xs md:text-sm">
+                {currentStepData?.message || 'Preparing...'}
+                {currentStepData?.status === 'loading' && loadingDots}
               </span>
-              <span 
-                className="text-xs font-bold"
-                style={{
-                  color: '#000000',
-                }}
-              >
+              <span className="text-xs md:text-sm">
                 {Math.round(overallProgress)}%
               </span>
             </div>
 
             {/* Progress bar */}
-            <div 
-              className="w-full h-4 relative"
-              style={{
-                border: '1px inset #c0c0c0',
-                background: '#ffffff'
-              }}
-            >
+            <div className="h-2 md:h-3 bg-black/40 rounded-full overflow-hidden">
               <div 
-                className="h-full transition-all duration-500 ease-out"
-                style={{ 
-                  width: `${overallProgress}%`,
-                  background: 'linear-gradient(145deg, #90EE90 0%, #32CD32 100%)',
-                  border: overallProgress > 0 ? '1px outset #90EE90' : 'none'
-                }}
+                className="h-full bg-blue-500 transition-all duration-300"
+                style={{ width: `${overallProgress}%` }}
               />
-              
-              {/* Progress bar segments for retro feel */}
-              <div className="absolute inset-0 flex">
-                {Array.from({ length: 20 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="flex-1 border-r border-gray-300"
-                    style={{ borderWidth: '0.5px' }}
-                  />
-                ))}
-              </div>
             </div>
-          </div>
 
-          {/* System status */}
-          {bootText && (
-            <div 
-              className="p-3 text-left"
+            {/* Current step indicator */}
+            <p 
+              className="text-[10px] md:text-xs text-white/70"
               style={{
-                background: 'linear-gradient(145deg, #f0f0f0 0%, #e0e0e0 100%)',
-                border: '2px inset #d4d4d4',
-                borderRadius: '2px'
+                textShadow: '1px 1px 2px rgba(0,0,0,0.8)',
               }}
             >
-              <pre 
-                className="text-xs leading-relaxed whitespace-pre-wrap"
-                style={{
-                  fontFamily: 'Courier New, monospace',
-                  color: '#000000',
-                  maxHeight: '80px',
-                  overflow: 'hidden'
-                }}
-              >
-                {bootText.split('\n').slice(-4).join('\n')}
-                {showCursor && <span className="bg-black text-white">█</span>}
-              </pre>
-            </div>
-          )}
-        </div>
-
-        {/* Version info */}
-        <div className="mt-8">
-          <p 
-            className="text-xs text-gray-300"
-            style={{
-              textShadow: '1px 1px 2px rgba(0,0,0,0.8)',
-            }}
-          >
-            Version 1.0 • Starting Windows 98 Style Experience
-          </p>
+              Step {currentStep + 1} of {steps.length}
+            </p>
+          </div>
         </div>
       </div>
 
