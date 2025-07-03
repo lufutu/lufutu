@@ -2264,6 +2264,35 @@ export function GlobalStyles({ settings }: GlobalStylesProps) {
         overflow: auto;
         background: #c0c0c0;
       }
+
+      /* Pixel Browser specific styles */
+      .window .pixel-browser {
+        padding: 0;
+        margin: -12px;
+        height: calc(100% + 24px);
+      }
+
+      /* Retro browser chrome styling */
+      .pixel-browser .border-outset {
+        border-top: 1px solid #dfdfdf;
+        border-left: 1px solid #dfdfdf;
+        border-right: 1px solid #808080;
+        border-bottom: 1px solid #808080;
+      }
+
+      .pixel-browser .border-inset {
+        border-top: 1px solid #808080;
+        border-left: 1px solid #808080;
+        border-right: 1px solid #dfdfdf;
+        border-bottom: 1px solid #dfdfdf;
+      }
+
+      .pixel-browser .active\\:border-inset:active {
+        border-top: 1px solid #808080 !important;
+        border-left: 1px solid #808080 !important;
+        border-right: 1px solid #dfdfdf !important;
+        border-bottom: 1px solid #dfdfdf !important;
+      }
       
       .retro-content h2 {
         font-size: ${Math.max(8, settings.fontSize + 2)}px;

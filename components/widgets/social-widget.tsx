@@ -8,6 +8,17 @@ interface SocialWidgetProps {
 }
 
 export function SocialWidget({ widget }: SocialWidgetProps) {
+  const handleProfileClick = (url: string) => {
+    window.open(url, '_blank', 'noopener,noreferrer')
+  }
+
+  const handleProfileKeyDown = (event: React.KeyboardEvent, url: string) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      handleProfileClick(url)
+    }
+  }
+
   return (
     <div className="widget-content social-widget-content">
       <div className="widget-title-bar">
@@ -24,7 +35,16 @@ export function SocialWidget({ widget }: SocialWidgetProps) {
       </div>
       <div className="social-main">
         {widget.data.profiles.map((profile: any, index: number) => (
-          <div key={index} className="social-profile" style={{ borderLeftColor: profile.color }}>
+          <div 
+            key={index} 
+            className="social-profile cursor-pointer hover:bg-gray-100" 
+            style={{ borderLeftColor: profile.color }}
+            onClick={() => handleProfileClick(profile.url)}
+            onKeyDown={(e) => handleProfileKeyDown(e, profile.url)}
+            tabIndex={0}
+            role="button"
+            aria-label={`Open ${profile.name} profile`}
+          >
             <div className="social-icon">
               <Image 
                 src={profile.icon} 

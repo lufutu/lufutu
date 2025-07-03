@@ -42,7 +42,7 @@ export function useGameState() {
     },
   })
 
-  const gameLoopRef = useRef<number>()
+  const gameLoopRef = useRef<number | null>(null)
 
   // Game logic functions
   const moveSnake = useCallback(() => {

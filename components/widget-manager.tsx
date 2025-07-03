@@ -19,7 +19,7 @@ interface WidgetManagerProps {
 }
 
 export const WidgetManager = React.memo(({ widgets, setWidgets, handleMouseDown, settings }: WidgetManagerProps) => {
-  const animationFrameRef = useRef<number>()
+  const animationFrameRef = useRef<number>(0)
   const lastUpdateTimeRef = useRef<number>(Date.now())
   const systemDataTimeRef = useRef<number>(0)
   const hitCounterTimeRef = useRef<number>(0)

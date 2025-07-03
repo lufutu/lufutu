@@ -1,6 +1,8 @@
 "use client"
 
 import Image from "next/image"
+import { useEffect } from "react"
+import { loadGameAssets } from "@/lib/lazy-asset-loader"
 
 interface GamesWindowProps {
   onGameSelect: (gameType: string) => void
@@ -34,8 +36,16 @@ export function GamesWindow({ onGameSelect }: GamesWindowProps) {
     },
   ]
 
+  // Lazy load game assets when games window opens
+  useEffect(() => {
+    loadGameAssets().catch(error => {
+      console.warn('Failed to load game assets:', error)
+    })
+  }, [])
+
   const handleGameClick = (gameType: string) => {
     console.log(`Game clicked: ${gameType}`)
+    console.log("GameManager available:", !!(window as any).gameManager)
     onGameSelect(gameType)
   }
 

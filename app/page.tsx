@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useCallback, useMemo } from "react"
+import React, { useEffect, useCallback, useMemo, useState } from "react"
 import { Desktop } from "@/components/desktop"
 import { WindowManager } from "@/components/window-manager"
 import { WidgetManager } from "@/components/widget-manager"
@@ -8,12 +8,16 @@ import { ContextMenu } from "@/components/context-menu"
 import { Dialog } from "@/components/dialog"
 import { Taskbar } from "@/components/taskbar"
 import { GlobalStyles } from "@/components/global-styles"
+import { PixelLoader } from "@/components/pixel-loader"
 import { useDesktopState } from "@/hooks/use-desktop-state"
-import { useGameState } from "@/hooks/use-game-state"
+
 import { useDragAndDrop } from "@/hooks/use-drag-and-drop"
 import { useMediaControls } from "@/hooks/use-media-controls"
+import { preemptivelyLoadCommonAssets } from "@/lib/lazy-asset-loader"
 
 export default function RetroPortfolio() {
+  const [isLoading, setIsLoading] = useState(true)
+  const [showTransition, setShowTransition] = useState(false)
   const {
     desktopIcons,
     setDesktopIcons,
@@ -31,7 +35,7 @@ export default function RetroPortfolio() {
     setNextZIndex,
   } = useDesktopState()
 
-  const { gameStates, setGameStates } = useGameState()
+
   const { dragState, handleMouseDown } = useDragAndDrop({
     desktopIcons,
     setDesktopIcons,
@@ -86,6 +90,17 @@ export default function RetroPortfolio() {
     return () => document.removeEventListener("click", handleGlobalClick)
   }, [handleGlobalClick])
 
+  // Handle loading completion with smooth transition
+  const handleLoadingComplete = useCallback(() => {
+    setShowTransition(true)
+    // Add a brief transition delay for visual smoothness
+    setTimeout(() => {
+      setIsLoading(false)
+      // Start preemptively loading commonly used assets in the background
+      preemptivelyLoadCommonAssets()
+    }, 300)
+  }, [])
+
   // Memoize components that don't change often
   const memoizedGlobalStyles = useMemo(() => <GlobalStyles settings={settings} />, [settings])
   const memoizedDesktop = useMemo(() => (
@@ -104,11 +119,22 @@ export default function RetroPortfolio() {
     />
   ), [settings, setSettings, iframeRef, audioRef, getYouTubeEmbedUrl, handleIframeError, isLoaded, hasError, isUsingYoutube])
 
+  // Show loader during initial load
+  if (isLoading) {
+    return <PixelLoader onComplete={handleLoadingComplete} />
+  }
+
   return (
     <>
       {memoizedGlobalStyles}
 
-      <div className="retro-desktop" onClick={handleDesktopClick} onContextMenu={handleRightClick}>
+      <div 
+        className={`retro-desktop transition-opacity duration-300 ${
+          showTransition ? 'opacity-100' : 'opacity-0'
+        }`} 
+        onClick={handleDesktopClick} 
+        onContextMenu={handleRightClick}
+      >
         {memoizedDesktop}
 
         <ContextMenu
@@ -135,8 +161,6 @@ export default function RetroPortfolio() {
           nextZIndex={nextZIndex}
           setNextZIndex={setNextZIndex}
           handleMouseDown={handleMouseDown}
-          gameStates={gameStates}
-          setGameStates={setGameStates}
           desktopIcons={desktopIcons}
           setDesktopIcons={setDesktopIcons}
         />

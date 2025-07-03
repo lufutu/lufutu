@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react"
 import type { Settings } from "@/types"
+import { loadAudioAssets } from "@/lib/lazy-asset-loader"
 
 // Declare YouTube API types
 declare global {
@@ -180,6 +181,12 @@ export const useMediaControls = ({ settings, setSettings }: UseMediaControlsProp
   // Control functions
   const togglePlayPause = useCallback(() => {
     hasUserInteracted.current = true
+    
+    // Lazy load audio assets when first interacting with media controls
+    loadAudioAssets().catch(error => {
+      console.warn('Failed to load audio assets:', error)
+    })
+    
     console.log('togglePlayPause called', { isUsingYoutube, isPlayerReady, audioReady, isPlaying })
     
     if (isUsingYoutube) {

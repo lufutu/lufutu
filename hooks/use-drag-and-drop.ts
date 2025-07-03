@@ -35,7 +35,7 @@ export function useDragAndDrop({
   })
 
   const lastMoveTime = useRef<number>(0)
-  const requestRef = useRef<number>()
+  const requestRef = useRef<number | null>(null)
   const pendingUpdateRef = useRef<{deltaX: number, deltaY: number} | null>(null)
   const THROTTLE_MS = 32 // ~30fps instead of 60fps for better performance
 

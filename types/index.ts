@@ -22,6 +22,7 @@ export interface Window {
   id: string
   title: string
   content: string
+  contentComponent?: React.ReactNode
   x: number
   y: number
   width: number

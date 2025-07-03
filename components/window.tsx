@@ -1,7 +1,6 @@
 "use client"
 
-import type React from "react"
-
+import React from "react"
 import type { Window } from "@/types"
 
 interface WindowProps {
@@ -13,6 +12,13 @@ interface WindowProps {
 }
 
 export function WindowComponent({ window, onClose, onMinimize, onMaximize, onMouseDown }: WindowProps) {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    // Prevent keyboard events from bubbling up from game windows
+    if (window.contentComponent && ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "w", "W", "s", "S", "a", "A", "d", "D"].includes(e.key)) {
+      e.stopPropagation()
+    }
+  }
+
   return (
     <div
       className={`window ${window.isMinimized ? "minimized" : ""}`}
@@ -23,6 +29,7 @@ export function WindowComponent({ window, onClose, onMinimize, onMaximize, onMou
         height: window.height,
         zIndex: window.zIndex,
       }}
+      onKeyDown={handleKeyDown}
     >
       <div className="window-titlebar" onMouseDown={onMouseDown}>
         <div className="window-title">{window.title}</div>
@@ -38,7 +45,15 @@ export function WindowComponent({ window, onClose, onMinimize, onMaximize, onMou
           </div>
         </div>
       </div>
-      <div className="window-content" dangerouslySetInnerHTML={{ __html: window.content }} />
+      <div className="window-content" style={{ overflow: 'hidden' }}>
+        {window.contentComponent ? (
+          <div className="h-full" style={{ overflow: 'hidden' }}>
+            {window.contentComponent}
+          </div>
+        ) : (
+          <div dangerouslySetInnerHTML={{ __html: window.content }} />
+        )}
+      </div>
     </div>
   )
 }

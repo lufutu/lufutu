@@ -13,6 +13,7 @@ export function useDesktopState() {
     { id: "art", label: "Art", icon: "/assets/icons/art.png", x: 20, y: 400, selected: false },
     { id: "about", label: "About", icon: "/assets/icons/about.png", x: 20, y: 480, selected: false },
     { id: "contact", label: "Contact", icon: "/assets/icons/contact.png", x: 20, y: 560, selected: false },
+    { id: "browser", label: "Browser", icon: "/assets/icons/browser.png", x: 120, y: 160, selected: false },
     { id: "games", label: "Games", icon: "/assets/icons/game.png", x: 120, y: 80, selected: false },
   ])
 
@@ -27,23 +28,23 @@ export function useDesktopState() {
       type: "hit-counter",
       data: { count: 142799, targetCount: 142799 },
     },
-    {
-      id: "social",
-      title: "Social Media",
-      x: 1340,
-      y: 180,
-      width: 180,
-      height: 140,
-      type: "social",
-      data: {
-        profiles: [
-          { name: "LinkedIn", icon: "/assets/icons/Document_Blue.png", url: "linkedin.com/in/lufutu", color: "#0077b5" },
-          { name: "GitHub", icon: "/assets/icons/Letter G Black_Blue.png", url: "github.com/username", color: "#333" },
-          { name: "Twitter", icon: "/assets/icons/Letter T Yellow_Blue.png", url: "twitter.com/username", color: "#1da1f2" },
-          { name: "Instagram", icon: "/assets/icons/Camera_Blue.png", url: "instagram.com/username", color: "#e4405f" },
-        ],
-      },
-    },
+    // {
+    //   id: "social",
+    //   title: "Social Media",
+    //   x: 1340,
+    //   y: 180,
+    //   width: 180,
+    //   height: 140,
+    //   type: "social",
+    //   data: {
+    //     profiles: [
+    //       { name: "Email", icon: "/assets/icons/Document_Blue.png", url: "mailto:truongvutu@gmail.com", color: "#d44638" },
+    //       { name: "LinkedIn", icon: "/assets/icons/Document_Blue.png", url: "https://www.linkedin.com/in/lufutu/", color: "#0077b5" },
+    //       { name: "GitHub", icon: "/assets/icons/Letter G Black_Blue.png", url: "https://github.com/lufutu", color: "#333" },
+    //       { name: "Location", icon: "/assets/icons/Circle_Blue.png", url: "https://maps.google.com/?q=Hanoi,Vietnam", color: "#4285f4" },
+    //     ],
+    //   },
+    // },
     {
       id: "weather",
       title: "Weather",
@@ -94,16 +95,16 @@ export function useDesktopState() {
           "Welcome to my retro desktop!\n\nFeel free to explore and interact with the widgets.\n\n- Drag widgets around\n- Right-click for settings\n- Edit this note!\n- Play some games!",
       },
     },
-    {
-      id: "clock",
-      title: "Digital Clock",
-      x: 1130,
-      y: 380,
-      width: 140,
-      height: 90,
-      type: "clock",
-      data: {},
-    },
+    // {
+    //   id: "clock",
+    //   title: "Digital Clock",
+    //   x: 1130,
+    //   y: 380,
+    //   width: 140,
+    //   height: 90,
+    //   type: "clock",
+    //   data: {},
+    // },
     {
       id: "habit-tracker",
       title: "Habit Tracker",
