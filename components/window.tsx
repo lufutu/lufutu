@@ -4,6 +4,7 @@ import React, { useState, useCallback } from "react"
 import type { Window } from "@/types"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 interface WindowProps {
   window: Window
@@ -11,6 +12,7 @@ interface WindowProps {
   onMinimize: () => void
   onMaximize: () => void
   onMouseDown: (e: React.MouseEvent) => void
+  onTouchStart?: (e: React.TouchEvent) => void
   onClick: () => void
   habitCompletions?: { completed: number, total: number }
 }
@@ -26,15 +28,37 @@ interface ResizeState {
   initialY: number
 }
 
+// Helper function to get touch coordinates
+const getTouchCoordinates = (e: TouchEvent) => {
+  const touch = e.touches[0] || e.changedTouches[0]
+  return { clientX: touch.clientX, clientY: touch.clientY }
+}
+
+// Helper function to get mouse coordinates
+const getMouseCoordinates = (e: MouseEvent) => {
+  return { clientX: e.clientX, clientY: e.clientY }
+}
+
+// Helper function to normalize coordinates from both mouse and touch events
+const getNormalizedCoordinates = (e: React.MouseEvent | React.TouchEvent) => {
+  if ('touches' in e) {
+    const touch = e.touches[0]
+    return { clientX: touch.clientX, clientY: touch.clientY }
+  }
+  return { clientX: e.clientX, clientY: e.clientY }
+}
+
 export const WindowComponent: React.FC<WindowProps> = ({
   window,
   onClose,
   onMinimize,
   onMaximize,
   onMouseDown,
+  onTouchStart,
   onClick,
   habitCompletions,
 }) => {
+  const isMobile = useIsMobile()
   const [resizeState, setResizeState] = useState<ResizeState>({
     isResizing: false,
     edge: '',
@@ -53,14 +77,22 @@ export const WindowComponent: React.FC<WindowProps> = ({
     }
   }
 
-  const handleResizeStart = useCallback((e: React.MouseEvent, edge: string) => {
+  const handleResizeStart = useCallback((e: React.MouseEvent | React.TouchEvent, edge: string) => {
     e.stopPropagation()
+    
+    // Prevent scrolling on touch devices during resize
+    if ('touches' in e) {
+      document.body.style.overflow = 'hidden'
+    }
+    
     if (!window.isMaximized) {
+      const { clientX, clientY } = getNormalizedCoordinates(e)
+      
       setResizeState({
         isResizing: true,
         edge,
-        startX: e.clientX,
-        startY: e.clientY,
+        startX: clientX,
+        startY: clientY,
         initialWidth: window.width,
         initialHeight: window.height,
         initialX: window.x,
@@ -70,12 +102,16 @@ export const WindowComponent: React.FC<WindowProps> = ({
   }, [window])
 
   React.useEffect(() => {
-    const handleResizeMove = (e: MouseEvent) => {
+    const handleResizeMove = (e: MouseEvent | TouchEvent) => {
       if (resizeState.isResizing) {
-        const deltaX = e.clientX - resizeState.startX
-        const deltaY = e.clientY - resizeState.startY
-        const minWidth = 200
-        const minHeight = 150
+        const { clientX, clientY } = 'touches' in e ? getTouchCoordinates(e) : getMouseCoordinates(e)
+        
+        const deltaX = clientX - resizeState.startX
+        const deltaY = clientY - resizeState.startY
+        
+        // Mobile-friendly minimum sizes
+        const minWidth = isMobile ? 280 : 200
+        const minHeight = isMobile ? 200 : 150
 
         let newWidth = resizeState.initialWidth
         let newHeight = resizeState.initialHeight
@@ -103,6 +139,13 @@ export const WindowComponent: React.FC<WindowProps> = ({
           }
         }
 
+        // Ensure window stays within screen bounds
+        const screenWidth = globalThis.window.innerWidth
+        const screenHeight = globalThis.window.innerHeight
+        
+        newWidth = Math.min(newWidth, screenWidth - newX)
+        newHeight = Math.min(newHeight, screenHeight - newY)
+
         // Update window dimensions through parent component
         window.width = newWidth
         window.height = newHeight
@@ -113,50 +156,99 @@ export const WindowComponent: React.FC<WindowProps> = ({
 
     const handleResizeEnd = () => {
       if (resizeState.isResizing) {
+        // Re-enable scrolling on touch devices
+        document.body.style.overflow = ''
+        
         setResizeState(prev => ({ ...prev, isResizing: false }))
       }
     }
 
     if (resizeState.isResizing) {
+      // Mouse events
       globalThis.window.addEventListener('mousemove', handleResizeMove)
       globalThis.window.addEventListener('mouseup', handleResizeEnd)
+      
+      // Touch events
+      globalThis.window.addEventListener('touchmove', handleResizeMove, { passive: false })
+      globalThis.window.addEventListener('touchend', handleResizeEnd)
+      globalThis.window.addEventListener('touchcancel', handleResizeEnd)
     }
 
     return () => {
       globalThis.window.removeEventListener('mousemove', handleResizeMove)
       globalThis.window.removeEventListener('mouseup', handleResizeEnd)
+      globalThis.window.removeEventListener('touchmove', handleResizeMove)
+      globalThis.window.removeEventListener('touchend', handleResizeEnd)
+      globalThis.window.removeEventListener('touchcancel', handleResizeEnd)
     }
-  }, [resizeState, window])
+  }, [resizeState, window, isMobile])
+
+  // Calculate responsive window size for mobile
+  const getResponsiveStyles = () => {
+    if (!isMobile) {
+      return {
+        left: window.x,
+        top: window.y,
+        width: window.width,
+        height: window.height,
+        zIndex: window.zIndex,
+      }
+    }
+
+    // Mobile responsive adjustments
+    const screenWidth = globalThis.window?.innerWidth || 360
+    const screenHeight = globalThis.window?.innerHeight || 640
+    
+    // For small screens, make windows take up more space
+    const maxWidth = Math.min(screenWidth - 20, window.width)
+    const maxHeight = Math.min(screenHeight - 100, window.height) // Leave space for taskbar
+    
+    return {
+      left: Math.max(10, Math.min(window.x, screenWidth - maxWidth)),
+      top: Math.max(10, Math.min(window.y, screenHeight - maxHeight)),
+      width: maxWidth,
+      height: maxHeight,
+      zIndex: window.zIndex,
+    }
+  }
+
+  const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
+    if (e.type === 'touchstart') {
+      onTouchStart?.(e as React.TouchEvent)
+    } else {
+      onMouseDown(e as React.MouseEvent)
+    }
+    onClick() // Bring window to front when clicking anywhere on it
+  }
 
   return (
     <div
       className={cn(
         "fixed flex flex-col bg-gray-100 border-2 border-gray-400 rounded shadow-lg transition-transform",
         window.isMinimized ? "invisible" : "visible",
-        "select-none"
+        "select-none",
+        isMobile && "touch-none" // Prevent default touch behaviors
       )}
-      style={{
-        left: window.x,
-        top: window.y,
-        width: window.width,
-        height: window.height,
-        zIndex: window.zIndex,
-      }}
-      onMouseDown={(e) => {
-        onMouseDown(e)
-        onClick() // Bring window to front when clicking anywhere on it
-      }}
+      style={getResponsiveStyles()}
+      onMouseDown={handleDragStart}
+      onTouchStart={handleDragStart}
       onKeyDown={handleKeyDown}
       role="dialog"
       aria-labelledby={`window-title-${window.id}`}
     >
       {/* Window Title Bar */}
-      <div className="flex items-center justify-between bg-gray-300 px-2 py-1">
+      <div className={cn(
+        "flex items-center justify-between bg-gray-300 px-2 py-1",
+        isMobile ? "min-h-[44px]" : "min-h-[24px]" // Touch-friendly height on mobile
+      )}>
         <div className="flex items-center gap-2">
           {window.icon && (
             <Image src={window.icon} alt="" width={16} height={16} />
           )}
-          <span id={`window-title-${window.id}`} className="text-sm font-semibold">
+          <span id={`window-title-${window.id}`} className={cn(
+            "font-semibold truncate",
+            isMobile ? "text-sm" : "text-sm"
+          )}>
             {window.title}
             {habitCompletions && ` ${habitCompletions.completed}/${habitCompletions.total}`}
           </span>
@@ -164,21 +256,30 @@ export const WindowComponent: React.FC<WindowProps> = ({
         <div className="flex gap-1">
           <button
             onClick={onMinimize}
-            className="w-4 h-4 bg-gray-400 hover:bg-gray-500 text-white flex items-center justify-center text-xs"
+            className={cn(
+              "bg-gray-400 hover:bg-gray-500 text-white flex items-center justify-center text-xs font-bold",
+              isMobile ? "w-8 h-8" : "w-4 h-4" // Touch-friendly size on mobile
+            )}
             aria-label="Minimize window"
           >
             _
           </button>
           <button
             onClick={onMaximize}
-            className="w-4 h-4 bg-gray-400 hover:bg-gray-500 text-white flex items-center justify-center text-xs"
+            className={cn(
+              "bg-gray-400 hover:bg-gray-500 text-white flex items-center justify-center text-xs font-bold",
+              isMobile ? "w-8 h-8" : "w-4 h-4" // Touch-friendly size on mobile
+            )}
             aria-label="Maximize window"
           >
             □
           </button>
           <button
             onClick={onClose}
-            className="w-4 h-4 bg-red-500 hover:bg-red-600 text-white flex items-center justify-center text-xs"
+            className={cn(
+              "bg-red-500 hover:bg-red-600 text-white flex items-center justify-center text-xs font-bold",
+              isMobile ? "w-8 h-8" : "w-4 h-4" // Touch-friendly size on mobile
+            )}
             aria-label="Close window"
           >
             ×
@@ -193,42 +294,63 @@ export const WindowComponent: React.FC<WindowProps> = ({
         )}
       </div>
 
-      {/* Resize Handles */}
-      {!window.isMaximized && (
+      {/* Resize Handles - Only show on desktop or larger mobile devices */}
+      {!window.isMaximized && !isMobile && (
         <>
           <div
             className="absolute top-0 left-0 w-2 h-2 cursor-nw-resize"
             onMouseDown={(e) => handleResizeStart(e, 'top-left')}
+            onTouchStart={(e) => handleResizeStart(e, 'top-left')}
           />
           <div
             className="absolute top-0 right-0 w-2 h-2 cursor-ne-resize"
             onMouseDown={(e) => handleResizeStart(e, 'top-right')}
+            onTouchStart={(e) => handleResizeStart(e, 'top-right')}
           />
           <div
             className="absolute bottom-0 left-0 w-2 h-2 cursor-sw-resize"
             onMouseDown={(e) => handleResizeStart(e, 'bottom-left')}
+            onTouchStart={(e) => handleResizeStart(e, 'bottom-left')}
           />
           <div
             className="absolute bottom-0 right-0 w-2 h-2 cursor-se-resize"
             onMouseDown={(e) => handleResizeStart(e, 'bottom-right')}
+            onTouchStart={(e) => handleResizeStart(e, 'bottom-right')}
           />
           <div
             className="absolute top-0 left-2 right-2 h-1 cursor-n-resize"
             onMouseDown={(e) => handleResizeStart(e, 'top')}
+            onTouchStart={(e) => handleResizeStart(e, 'top')}
           />
           <div
             className="absolute bottom-0 left-2 right-2 h-1 cursor-s-resize"
             onMouseDown={(e) => handleResizeStart(e, 'bottom')}
+            onTouchStart={(e) => handleResizeStart(e, 'bottom')}
           />
           <div
             className="absolute left-0 top-2 bottom-2 w-1 cursor-w-resize"
             onMouseDown={(e) => handleResizeStart(e, 'left')}
+            onTouchStart={(e) => handleResizeStart(e, 'left')}
           />
           <div
             className="absolute right-0 top-2 bottom-2 w-1 cursor-e-resize"
             onMouseDown={(e) => handleResizeStart(e, 'right')}
+            onTouchStart={(e) => handleResizeStart(e, 'right')}
           />
         </>
+      )}
+      
+      {/* Mobile-specific resize handle - bottom right corner only */}
+      {!window.isMaximized && isMobile && (
+        <div
+          className="absolute bottom-0 right-0 w-6 h-6 cursor-se-resize bg-gray-400 opacity-50 hover:opacity-75"
+          onMouseDown={(e) => handleResizeStart(e, 'bottom-right')}
+          onTouchStart={(e) => handleResizeStart(e, 'bottom-right')}
+        >
+          <div className="w-full h-full flex items-end justify-end p-1">
+            <div className="w-2 h-2 bg-gray-600 rounded-full"></div>
+          </div>
+        </div>
       )}
     </div>
   )

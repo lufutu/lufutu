@@ -14,6 +14,26 @@ interface UseDragAndDropProps {
   setNextZIndex: React.Dispatch<React.SetStateAction<number>>
 }
 
+// Helper function to get touch coordinates
+const getTouchCoordinates = (e: TouchEvent) => {
+  const touch = e.touches[0] || e.changedTouches[0]
+  return { clientX: touch.clientX, clientY: touch.clientY }
+}
+
+// Helper function to get mouse coordinates
+const getMouseCoordinates = (e: MouseEvent) => {
+  return { clientX: e.clientX, clientY: e.clientY }
+}
+
+// Helper function to normalize coordinates from both mouse and touch events
+const getNormalizedCoordinates = (e: React.MouseEvent | React.TouchEvent) => {
+  if ('touches' in e) {
+    const touch = e.touches[0]
+    return { clientX: touch.clientX, clientY: touch.clientY }
+  }
+  return { clientX: e.clientX, clientY: e.clientY }
+}
+
 export function useDragAndDrop({
   desktopIcons,
   setDesktopIcons,
@@ -53,8 +73,15 @@ export function useDragAndDrop({
     )
   }, [setDesktopIcons])
 
-  const handleMouseDown = useCallback((e: React.MouseEvent, type: "window" | "icon" | "widget", targetId: string) => {
+  const handleDragStart = useCallback((e: React.MouseEvent | React.TouchEvent, type: "window" | "icon" | "widget", targetId: string) => {
     e.preventDefault()
+    
+    // Prevent scrolling on touch devices
+    if ('touches' in e) {
+      document.body.style.overflow = 'hidden'
+    }
+
+    const { clientX, clientY } = getNormalizedCoordinates(e)
 
     if (type === "window") {
       const window = windows.find((w) => w.id === targetId)
@@ -64,8 +91,8 @@ export function useDragAndDrop({
         isDragging: true,
         dragType: "window",
         targetId,
-        startX: e.clientX,
-        startY: e.clientY,
+        startX: clientX,
+        startY: clientY,
         startTargetX: window.x,
         startTargetY: window.y,
       })
@@ -77,8 +104,8 @@ export function useDragAndDrop({
         isDragging: true,
         dragType: "icon",
         targetId,
-        startX: e.clientX,
-        startY: e.clientY,
+        startX: clientX,
+        startY: clientY,
         startTargetX: icon.x || 0,
         startTargetY: icon.y || 0,
       })
@@ -89,13 +116,23 @@ export function useDragAndDrop({
         isDragging: true,
         dragType: "widget",
         targetId,
-        startX: e.clientX,
-        startY: e.clientY,
+        startX: clientX,
+        startY: clientY,
         startTargetX: widget.x,
         startTargetY: widget.y,
       })
     }
   }, [windows, desktopIcons, widgets, bringToFront, handleIconClick])
+
+  // Legacy mouse handler for backward compatibility
+  const handleMouseDown = useCallback((e: React.MouseEvent, type: "window" | "icon" | "widget", targetId: string) => {
+    handleDragStart(e, type, targetId)
+  }, [handleDragStart])
+
+  // New touch handler
+  const handleTouchStart = useCallback((e: React.TouchEvent, type: "window" | "icon" | "widget", targetId: string) => {
+    handleDragStart(e, type, targetId)
+  }, [handleDragStart])
 
   // Optimized update function using requestAnimationFrame
   const applyPendingUpdate = useCallback(() => {
@@ -106,14 +143,17 @@ export function useDragAndDrop({
     const { deltaX, deltaY } = pendingUpdateRef.current
     pendingUpdateRef.current = null
 
+    const screenWidth = window.innerWidth
+    const screenHeight = window.innerHeight
+
     if (dragState.dragType === "window") {
       setWindows((prev) =>
         prev.map((w) =>
           w.id === dragState.targetId
             ? {
                 ...w,
-                x: Math.max(0, Math.min(window.innerWidth - 200, dragState.startTargetX + deltaX)),
-                y: Math.max(0, Math.min(window.innerHeight - 100, dragState.startTargetY + deltaY)),
+                x: Math.max(0, Math.min(screenWidth - Math.min(w.width, 200), dragState.startTargetX + deltaX)),
+                y: Math.max(0, Math.min(screenHeight - Math.min(w.height, 100), dragState.startTargetY + deltaY)),
               }
             : w,
         ),
@@ -124,8 +164,8 @@ export function useDragAndDrop({
           i.id === dragState.targetId
             ? {
                 ...i,
-                x: Math.max(0, Math.min(window.innerWidth - 80, dragState.startTargetX + deltaX)),
-                y: Math.max(0, Math.min(window.innerHeight - 80, dragState.startTargetY + deltaY)),
+                x: Math.max(0, Math.min(screenWidth - 80, dragState.startTargetX + deltaX)),
+                y: Math.max(0, Math.min(screenHeight - 80, dragState.startTargetY + deltaY)),
               }
             : i,
         ),
@@ -136,8 +176,8 @@ export function useDragAndDrop({
           w.id === dragState.targetId
             ? {
                 ...w,
-                x: Math.max(0, Math.min(window.innerWidth - w.width, dragState.startTargetX + deltaX)),
-                y: Math.max(0, Math.min(window.innerHeight - w.height, dragState.startTargetY + deltaY)),
+                x: Math.max(0, Math.min(screenWidth - w.width, dragState.startTargetX + deltaX)),
+                y: Math.max(0, Math.min(screenHeight - w.height, dragState.startTargetY + deltaY)),
               }
             : w,
         ),
@@ -145,7 +185,7 @@ export function useDragAndDrop({
     }
   }, [dragState, setWindows, setDesktopIcons, setWidgets])
 
-  const handleMouseMove = useCallback((e: MouseEvent) => {
+  const handleMove = useCallback((e: MouseEvent | TouchEvent) => {
     if (!dragState.isDragging || !dragState.targetId) return
 
     // Throttle mouse move updates more aggressively
@@ -153,8 +193,10 @@ export function useDragAndDrop({
     if (now - lastMoveTime.current < THROTTLE_MS) return
     lastMoveTime.current = now
 
-    const deltaX = e.clientX - dragState.startX
-    const deltaY = e.clientY - dragState.startY
+    const { clientX, clientY } = 'touches' in e ? getTouchCoordinates(e) : getMouseCoordinates(e)
+
+    const deltaX = clientX - dragState.startX
+    const deltaY = clientY - dragState.startY
 
     // Store pending update instead of applying immediately
     pendingUpdateRef.current = { deltaX, deltaY }
@@ -166,12 +208,15 @@ export function useDragAndDrop({
     requestRef.current = requestAnimationFrame(applyPendingUpdate)
   }, [dragState, applyPendingUpdate])
 
-  const handleMouseUp = useCallback(() => {
+  const handleEnd = useCallback(() => {
     // Apply any final pending update
     if (requestRef.current) {
       cancelAnimationFrame(requestRef.current)
       applyPendingUpdate()
     }
+    
+    // Re-enable scrolling on touch devices
+    document.body.style.overflow = ''
     
     setDragState({
       isDragging: false,
@@ -188,18 +233,33 @@ export function useDragAndDrop({
 
   useEffect(() => {
     if (dragState.isDragging) {
-      document.addEventListener("mousemove", handleMouseMove, { passive: true })
-      document.addEventListener("mouseup", handleMouseUp)
+      // Mouse events
+      document.addEventListener("mousemove", handleMove, { passive: false })
+      document.addEventListener("mouseup", handleEnd)
+      
+      // Touch events
+      document.addEventListener("touchmove", handleMove, { passive: false })
+      document.addEventListener("touchend", handleEnd)
+      document.addEventListener("touchcancel", handleEnd)
     }
 
     return () => {
-      document.removeEventListener("mousemove", handleMouseMove)
-      document.removeEventListener("mouseup", handleMouseUp)
+      document.removeEventListener("mousemove", handleMove)
+      document.removeEventListener("mouseup", handleEnd)
+      document.removeEventListener("touchmove", handleMove)
+      document.removeEventListener("touchend", handleEnd)
+      document.removeEventListener("touchcancel", handleEnd)
+      
       if (requestRef.current) {
         cancelAnimationFrame(requestRef.current)
       }
     }
-  }, [dragState.isDragging, handleMouseMove, handleMouseUp])
+  }, [dragState.isDragging, handleMove, handleEnd])
 
-  return { dragState, handleMouseDown }
+  return { 
+    dragState, 
+    handleMouseDown, // Keep for backward compatibility
+    handleTouchStart, // New touch handler
+    handleDragStart // Universal handler
+  }
 }

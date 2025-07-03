@@ -15,10 +15,11 @@ interface WidgetManagerProps {
   widgets: Widget[]
   setWidgets: React.Dispatch<React.SetStateAction<Widget[]>>
   handleMouseDown: (e: React.MouseEvent, type: "window" | "icon" | "widget", targetId: string) => void
+  handleTouchStart?: (e: React.TouchEvent, type: "window" | "icon" | "widget", targetId: string) => void
   settings: Settings
 }
 
-export const WidgetManager = React.memo(({ widgets, setWidgets, handleMouseDown, settings }: WidgetManagerProps) => {
+export const WidgetManager = React.memo(({ widgets, setWidgets, handleMouseDown, handleTouchStart, settings }: WidgetManagerProps) => {
   const animationFrameRef = useRef<number>(0)
   const lastUpdateTimeRef = useRef<number>(Date.now())
   const systemDataTimeRef = useRef<number>(0)
@@ -275,11 +276,12 @@ export const WidgetManager = React.memo(({ widgets, setWidgets, handleMouseDown,
           height: widget.height,
         }}
         onMouseDown={(e) => handleMouseDown(e, "widget", widget.id)}
+        onTouchStart={(e) => handleTouchStart?.(e, "widget", widget.id)}
       >
         {renderWidget(widget)}
       </div>
     ))
-  }, [widgets, handleMouseDown, renderWidget])
+  }, [widgets, handleMouseDown, handleTouchStart, renderWidget])
 
   return <>{memoizedWidgets}</>
 })

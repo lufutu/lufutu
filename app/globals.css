@@ -12,6 +12,128 @@
   }
 }
 
+/* Mobile-specific styles for retro desktop */
+@layer components {
+  /* Touch-friendly drag handles */
+  .mobile-drag-handle {
+    @apply min-h-[44px] min-w-[44px];
+  }
+  
+  /* Mobile widget adjustments */
+  @media (max-width: 768px) {
+    .widget {
+      @apply touch-none;
+      min-width: 120px;
+      min-height: 100px;
+    }
+    
+    .widget:active {
+      @apply scale-105;
+      transition: transform 0.1s ease;
+    }
+    
+    /* Desktop icons mobile adjustments */
+    .desktop-icon {
+      @apply min-h-[80px] min-w-[80px];
+    }
+    
+    .desktop-icon:active {
+      @apply scale-110;
+      transition: transform 0.1s ease;
+    }
+    
+    /* Window mobile adjustments */
+    .window-mobile {
+      @apply shadow-2xl;
+      min-width: 280px;
+      min-height: 200px;
+    }
+    
+    .window-mobile .window-title-bar {
+      @apply min-h-[44px] text-base;
+    }
+    
+    .window-mobile .window-controls button {
+      @apply min-h-[36px] min-w-[36px] text-sm;
+    }
+    
+    /* Taskbar mobile adjustments */
+    .taskbar-mobile {
+      @apply min-h-[50px] px-2;
+    }
+    
+    .taskbar-mobile .taskbar-button {
+      @apply min-h-[40px] min-w-[40px] text-sm;
+    }
+    
+    /* Context menu mobile adjustments */
+    .context-menu-mobile {
+      @apply min-w-[180px];
+    }
+    
+    .context-menu-mobile .context-menu-item {
+      @apply min-h-[44px] text-base px-4;
+    }
+    
+    /* Prevent text selection on mobile during drag */
+    .retro-desktop {
+      @apply touch-none select-none;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    /* Mobile-specific scrollbar styles */
+    .mobile-scrollbar {
+      scrollbar-width: thin;
+      scrollbar-color: #4b5563 #1f2937;
+    }
+    
+    .mobile-scrollbar::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    
+    .mobile-scrollbar::-webkit-scrollbar-track {
+      background: #1f2937;
+    }
+    
+    .mobile-scrollbar::-webkit-scrollbar-thumb {
+      background: #4b5563;
+      border-radius: 4px;
+    }
+    
+    .mobile-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #6b7280;
+    }
+  }
+  
+  /* Prevent iOS bounce scrolling when dragging */
+  @supports (-webkit-overflow-scrolling: touch) {
+    .retro-desktop {
+      -webkit-overflow-scrolling: auto;
+    }
+  }
+  
+  /* Mobile-specific animations */
+  @media (max-width: 768px) {
+    .widget-drag-preview {
+      @apply opacity-80 scale-105 rotate-2;
+      transition: all 0.2s ease;
+    }
+    
+    .icon-drag-preview {
+      @apply opacity-80 scale-110 rotate-1;
+      transition: all 0.2s ease;
+    }
+    
+    .window-drag-preview {
+      @apply opacity-90 scale-102;
+      transition: all 0.2s ease;
+    }
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

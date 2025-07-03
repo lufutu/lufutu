@@ -8,11 +8,13 @@ import Image from "next/image"
 interface DesktopIconsProps {
   handleIconDoubleClick: (iconId: string) => void
   handleMouseDown: (e: React.MouseEvent, type: "window" | "icon" | "widget", targetId: string) => void
+  handleTouchStart?: (e: React.TouchEvent, type: "window" | "icon" | "widget", targetId: string) => void
 }
 
 export const DesktopIcons: React.FC<DesktopIconsProps> = ({
   handleIconDoubleClick,
   handleMouseDown,
+  handleTouchStart,
 }) => {
   const [icons, setIcons] = useState<DesktopIcon[]>(() => 
     getDesktopIcons().map(icon => ({
@@ -74,7 +76,7 @@ export const DesktopIcons: React.FC<DesktopIconsProps> = ({
     handleMouseDown(e, "icon", icon.id)
   }
 
-  const handleTouchStart = (e: React.TouchEvent, icon: DesktopIcon) => {
+  const handleIconTouchStart = (e: React.TouchEvent, icon: DesktopIcon) => {
     e.preventDefault()
     const touch = e.touches[0]
     const iconElement = e.currentTarget as HTMLDivElement
@@ -101,7 +103,12 @@ export const DesktopIcons: React.FC<DesktopIconsProps> = ({
       selected: i.id === icon.id
     })))
 
-    handleMouseDown(e as unknown as React.MouseEvent, "icon", icon.id)
+    // Use the shared drag system if available, otherwise fallback to mouse handler
+    if (handleTouchStart) {
+      handleTouchStart(e, "icon", icon.id)
+    } else {
+      handleMouseDown(e as unknown as React.MouseEvent, "icon", icon.id)
+    }
   }
 
   const handleMouseMove = React.useCallback((e: MouseEvent | TouchEvent) => {
@@ -191,11 +198,12 @@ export const DesktopIcons: React.FC<DesktopIconsProps> = ({
               desktop-icon flex flex-col items-center justify-center
               cursor-move rounded p-2 touch-none
               ${icon.selected ? 'bg-blue-500/20' : 'hover:bg-white/5'}
+              ml-8 mt-4
             `}
             style={style}
             onDoubleClick={() => handleDoubleClick(icon.id)}
             onMouseDown={(e) => handleIconMouseDown(e, icon)}
-            onTouchStart={(e) => handleTouchStart(e, icon)}
+            onTouchStart={(e) => handleIconTouchStart(e, icon)}
             tabIndex={0}
             role="button"
             aria-label={icon.label}

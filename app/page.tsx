@@ -36,7 +36,7 @@ export default function RetroPortfolio() {
   } = useDesktopState()
 
 
-  const { handleMouseDown } = useDragAndDrop({
+  const { handleMouseDown, handleTouchStart } = useDragAndDrop({
     desktopIcons,
     setDesktopIcons,
     widgets,
@@ -151,6 +151,7 @@ export default function RetroPortfolio() {
           widgets={widgets}
           setWidgets={setWidgets}
           handleMouseDown={handleMouseDown}
+          handleTouchStart={handleTouchStart}
           settings={settings}
         />
 

@@ -12,21 +12,13 @@ import { PongGame } from "./games/pong-game"
 import { MemoryGame } from "./games/memory-game"
 import { BreakoutGame } from "./games/breakout-game"
 import { getWindowConfig, getWindowContent } from "@/lib/window-content"
+import { useDragAndDrop } from "@/hooks/use-drag-and-drop"
 
 interface WindowManagerProps {
   windows: Window[]
   setWindows: React.Dispatch<React.SetStateAction<Window[]>>
   nextZIndex: number
   setNextZIndex: React.Dispatch<React.SetStateAction<number>>
-}
-
-interface DragState {
-  isDragging: boolean
-  windowId: string | null
-  startX: number
-  startY: number
-  initialWindowX: number
-  initialWindowY: number
 }
 
 export const WindowManager: React.FC<WindowManagerProps> = ({
@@ -38,13 +30,17 @@ export const WindowManager: React.FC<WindowManagerProps> = ({
   const [habitCompletions, setHabitCompletions] = useState<Record<string, { completed: number; total: number }>>({})
   const openWindowRef = useRef<((type: string, title?: string) => void) | null>(null)
   const isInitialMount = useRef(true)
-  const [dragState, setDragState] = useState<DragState>({
-    isDragging: false,
-    windowId: null,
-    startX: 0,
-    startY: 0,
-    initialWindowX: 0,
-    initialWindowY: 0,
+
+  // Use shared drag and drop system
+  const { handleMouseDown, handleTouchStart, handleDragStart } = useDragAndDrop({
+    desktopIcons: [], // Windows don't interact with desktop icons
+    setDesktopIcons: () => {}, // No-op
+    widgets: [], // Windows don't interact with widgets
+    setWidgets: () => {}, // No-op
+    windows,
+    setWindows,
+    nextZIndex,
+    setNextZIndex,
   })
 
   const openWindow = useCallback((type: string, title?: string) => {
@@ -152,63 +148,13 @@ export const WindowManager: React.FC<WindowManagerProps> = ({
     openWindow(iconId)
   }, [openWindow])
 
-  const handleMouseDown = useCallback((e: React.MouseEvent, type: "window" | "icon" | "widget", targetId: string) => {
-    if (type === "window") {
-      const window = windows.find(w => w.id === targetId)
-      if (window && !window.isMaximized) {
-        setDragState({
-          isDragging: true,
-          windowId: targetId,
-          startX: e.clientX,
-          startY: e.clientY,
-          initialWindowX: window.x,
-          initialWindowY: window.y,
-        })
-      }
-    }
-  }, [windows, setDragState])
+  const handleIconMouseDown = useCallback((e: React.MouseEvent, type: "window" | "icon" | "widget", targetId: string) => {
+    handleMouseDown(e, type, targetId)
+  }, [handleMouseDown])
 
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (dragState.isDragging && dragState.windowId) {
-        const deltaX = e.clientX - dragState.startX
-        const deltaY = e.clientY - dragState.startY
-
-        setWindows(prev => prev.map(w =>
-          w.id === dragState.windowId
-            ? {
-                ...w,
-                x: dragState.initialWindowX + deltaX,
-                y: dragState.initialWindowY + deltaY,
-              }
-            : w
-        ))
-      }
-    }
-
-    const handleMouseUp = () => {
-      if (dragState.isDragging) {
-        setDragState({
-          isDragging: false,
-          windowId: null,
-          startX: 0,
-          startY: 0,
-          initialWindowX: 0,
-          initialWindowY: 0,
-        })
-      }
-    }
-
-    if (dragState.isDragging) {
-      window.addEventListener('mousemove', handleMouseMove)
-      window.addEventListener('mouseup', handleMouseUp)
-    }
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove)
-      window.removeEventListener('mouseup', handleMouseUp)
-    }
-  }, [dragState, setWindows])
+  const handleIconTouchStart = useCallback((e: React.TouchEvent, type: "window" | "icon" | "widget", targetId: string) => {
+    handleTouchStart(e, type, targetId)
+  }, [handleTouchStart])
 
   const bringWindowToFront = useCallback((windowId: string) => {
     setWindows(prev => prev.map(w =>
@@ -221,7 +167,8 @@ export const WindowManager: React.FC<WindowManagerProps> = ({
     <>
       <DesktopIcons
         handleIconDoubleClick={handleIconDoubleClick}
-        handleMouseDown={handleMouseDown}
+        handleMouseDown={handleIconMouseDown}
+        handleTouchStart={handleIconTouchStart}
       />
       {windows.map((window) => (
         <WindowComponent
@@ -253,6 +200,7 @@ export const WindowManager: React.FC<WindowManagerProps> = ({
             ))
           }}
           onMouseDown={(e) => handleMouseDown(e, "window", window.id)}
+          onTouchStart={(e) => handleTouchStart(e, "window", window.id)}
           onClick={() => bringWindowToFront(window.id)}
           habitCompletions={habitCompletions[window.id]}
         />
