@@ -224,7 +224,6 @@ export function PixelLoader({ onComplete }: PixelLoaderProps) {
         backgroundImage: 'url(/assets/backgrounds/coffee_in_rain_by.webp)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        fontFamily: "'MS Sans Serif', sans-serif"
       }}
     >
       {/* Background overlay */}
@@ -249,7 +248,6 @@ export function PixelLoader({ onComplete }: PixelLoaderProps) {
                 className="text-2xl font-bold text-white mb-1"
                 style={{
                   textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
-                  fontFamily: "'MS Sans Serif', sans-serif"
                 }}
               >
                 Lufutu
@@ -258,7 +256,6 @@ export function PixelLoader({ onComplete }: PixelLoaderProps) {
                 className="text-sm text-gray-200"
                 style={{
                   textShadow: '1px 1px 2px rgba(0,0,0,0.8)',
-                  fontFamily: "'MS Sans Serif', sans-serif"
                 }}
               >
                 Retro Digital Experience
@@ -276,7 +273,6 @@ export function PixelLoader({ onComplete }: PixelLoaderProps) {
                 className="text-white text-sm mb-2"
                 style={{
                   textShadow: '1px 1px 2px rgba(0,0,0,0.8)',
-                  fontFamily: "'MS Sans Serif', sans-serif"
                 }}
               >
                 {currentStepData.message}{loadingDots}
@@ -299,7 +295,6 @@ export function PixelLoader({ onComplete }: PixelLoaderProps) {
                 className="text-xs"
                 style={{
                   color: '#000000',
-                  fontFamily: "'MS Sans Serif', sans-serif"
                 }}
               >
                 Loading Progress
@@ -308,7 +303,6 @@ export function PixelLoader({ onComplete }: PixelLoaderProps) {
                 className="text-xs font-bold"
                 style={{
                   color: '#000000',
-                  fontFamily: "'MS Sans Serif', sans-serif"
                 }}
               >
                 {Math.round(overallProgress)}%
@@ -377,7 +371,6 @@ export function PixelLoader({ onComplete }: PixelLoaderProps) {
             className="text-xs text-gray-300"
             style={{
               textShadow: '1px 1px 2px rgba(0,0,0,0.8)',
-              fontFamily: "'MS Sans Serif', sans-serif"
             }}
           >
             Version 1.0 • Starting Windows 98 Style Experience

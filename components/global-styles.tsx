@@ -721,6 +721,7 @@ export function GlobalStyles({ settings }: GlobalStylesProps) {
         height: 100%;
         display: flex;
         flex-direction: column;
+        font-size: ${Math.max(8, settings.fontSize)}px;
         font-family: 'Courier New', 'Monaco', monospace;
         border: 4px solid #5D4037;
         box-shadow: 
@@ -799,9 +800,7 @@ export function GlobalStyles({ settings }: GlobalStylesProps) {
         background: #ffffff !important;
         border: 2px inset #d4d4d4 !important;
         color: #000000 !important;
-        font-size: ${Math.max(6, settings.fontSize - 2)}px !important;
         padding: 4px 6px !important;
-        font-family: 'MS Sans Serif', sans-serif !important;
       }
 
       .habit-tracker-content input::placeholder {
@@ -953,7 +952,6 @@ export function GlobalStyles({ settings }: GlobalStylesProps) {
       .habit-tracker-content h3 {
         color: #FFFFFF !important;
         font-weight: bold !important;
-        font-size: ${Math.max(8, settings.fontSize)}px !important;
         font-family: 'Courier New', 'Monaco', monospace !important;
         text-shadow: 
           2px 2px 0px #000000,

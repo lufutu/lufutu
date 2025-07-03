@@ -275,6 +275,25 @@ export const WINDOW_CONTENT: Record<string, WindowContentConfig> = {
       </div>
     `,
     defaultSize: { width: 600, height: 400 }
+  },
+
+  habits: {
+    title: "🎯 Habits 1/1",
+    content: `
+      <div class="retro-content">
+        <h2>🎯 Habit Tracker</h2>
+        <p>Track your daily habits and build positive routines with this retro-style habit tracker.</p>
+        <div class="stats-box">
+          <h3>Features</h3>
+          <p>• Track daily habits and streaks</p>
+          <p>• Quick add new habits</p>
+          <p>• Progress tracking</p>
+          <p>• Celebration animations</p>
+          <p>• Local storage persistence</p>
+        </div>
+      </div>
+    `,
+    defaultSize: { width: 400, height: 600 }
   }
 } as const
 

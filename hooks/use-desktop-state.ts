@@ -15,6 +15,7 @@ export function useDesktopState() {
     { id: "contact", label: "Contact", icon: "/assets/icons/contact.png", x: 20, y: 560, selected: false },
     { id: "browser", label: "Browser", icon: "/assets/icons/browser.png", x: 120, y: 160, selected: false },
     { id: "games", label: "Games", icon: "/assets/icons/game.png", x: 120, y: 80, selected: false },
+    { id: "habits", label: "Habits", icon: "/assets/icons/Circle_Blue.png", x: 120, y: 240, selected: false },
   ])
 
   const [widgets, setWidgets] = useState<Widget[]>([
@@ -105,43 +106,43 @@ export function useDesktopState() {
     //   type: "clock",
     //   data: {},
     // },
-    {
-      id: "habit-tracker",
-      title: "Habit Tracker",
-      x: 990,
-      y: 670,
-      width: 280,
-      height: 300,
-      type: "habit-tracker",
-      data: {
-        habits: [
-          {
-            id: "exercise",
-            identity: "I am someone who exercises daily",
-            action: "Do 10 pushups",
-            cue: "After morning coffee",
-            emoji: "💪",
-            streak: 0,
-            lastCompleted: null,
-            completions: []
-          },
-          {
-            id: "water",
-            identity: "I am someone who stays hydrated",
-            action: "Drink a glass of water",
-            cue: "",
-            emoji: "💧",
-            streak: 0,
-            lastCompleted: null,
-            completions: []
-          }
-        ],
-        weeklyReflection: {
-          lastWeek: null,
-          reflection: ""
-        }
-      },
-    },
+    // {
+    //   id: "habit-tracker",
+    //   title: "Habit Tracker",
+    //   x: 990,
+    //   y: 670,
+    //   width: 280,
+    //   height: 300,
+    //   type: "habit-tracker",
+    //   data: {
+    //     habits: [
+    //       {
+    //         id: "exercise",
+    //         identity: "I am someone who exercises daily",
+    //         action: "Do 10 pushups",
+    //         cue: "After morning coffee",
+    //         emoji: "💪",
+    //         streak: 0,
+    //         lastCompleted: null,
+    //         completions: []
+    //       },
+    //       {
+    //         id: "water",
+    //         identity: "I am someone who stays hydrated",
+    //         action: "Drink a glass of water",
+    //         cue: "",
+    //         emoji: "💧",
+    //         streak: 0,
+    //         lastCompleted: null,
+    //         completions: []
+    //       }
+    //     ],
+    //     weeklyReflection: {
+    //       lastWeek: null,
+    //       reflection: ""
+    //     }
+    //   },
+    // },
   ])
 
   const [windows, setWindows] = useState<Window[]>([
