@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import type { DesktopIcon, Widget, Window, ContextMenu, Dialog, Settings } from "@/types"
 import { getWindowContent, getWindowConfig } from "@/lib/window-content"
 
@@ -161,12 +161,35 @@ export function useDesktopState() {
     inputValue: "",
   })
 
-  const [settings, setSettings] = useState<Settings>({
-    youtubeUrl: "",
-    fontSize: 10,
-    theme: "retro-purple",
-    spotifyUrl: "https://open.spotify.com/track/1rnMtjOkTgRtV69vH43N0U",
+  const [settings, setSettings] = useState<Settings>(() => {
+    // Try to load settings from localStorage
+    const savedSettings = typeof window !== 'undefined' ? localStorage.getItem('desktop-settings') : null
+    const defaultSettings = {
+      youtubeUrl: "",
+      fontSize: 10,
+      theme: "retro-purple",
+      spotifyUrl: "https://open.spotify.com/track/1rnMtjOkTgRtV69vH43N0U",
+      backgroundImage: "coffee_in_rain_by.webp"
+    }
+
+    if (savedSettings) {
+      try {
+        return { ...defaultSettings, ...JSON.parse(savedSettings) }
+      } catch (e) {
+        console.error('Failed to parse saved settings:', e)
+        return defaultSettings
+      }
+    }
+
+    return defaultSettings
   })
+
+  // Save settings to localStorage when they change
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('desktop-settings', JSON.stringify(settings))
+    }
+  }, [settings])
 
   const [nextZIndex, setNextZIndex] = useState(1001)
 

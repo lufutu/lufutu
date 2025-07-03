@@ -237,7 +237,7 @@ export function PixelLoader({ onComplete }: PixelLoaderProps) {
         <div className="mb-4 md:mb-8">
           <div className="flex items-center justify-center mb-4">
             <img 
-              src="/assets/icons/Controller_Blue.png" 
+              src="/assets/icons/lufutu.png" 
               alt="Lufutu Logo" 
               className="w-12 h-12 md:w-16 md:h-16 mr-2 md:mr-4"
               style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.5))' }}

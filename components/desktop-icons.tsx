@@ -202,7 +202,7 @@ export const DesktopIcons: React.FC<DesktopIconsProps> = ({
             <img
               src={icon.icon}
               alt={icon.label}
-              className="w-8 h-8 mb-1"
+              className="w-16 h-16 mb-1"
               style={{ imageRendering: "pixelated" }}
               draggable={false}
             />

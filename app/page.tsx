@@ -179,6 +179,8 @@ export default function RetroPortfolio() {
             onToggleMute: toggleMute,
             onToggleMode: toggleMode
           }}
+          settings={settings}
+          setSettings={setSettings}
         />
       </div>
     </>

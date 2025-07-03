@@ -4,6 +4,7 @@ export interface WindowContentConfig {
   title: string
   icon: string
   content: string
+  type: string
   windowId: string // Unique identifier for the window
   defaultSize: {
     width: number
@@ -21,6 +22,7 @@ export interface WindowContentConfig {
 export const APP_CONTENT: Record<string, WindowContentConfig> = {
   home: {
     title: "Home",
+    type: "program",
     icon: "/assets/icons/home.png",
     windowId: "home-window",
     content: `
@@ -46,6 +48,7 @@ export const APP_CONTENT: Record<string, WindowContentConfig> = {
 
   blog: {
     title: "Blog",
+    type: "program",
     icon: "/assets/icons/blog.png",
     windowId: "blog-window",
     content: `
@@ -67,6 +70,7 @@ export const APP_CONTENT: Record<string, WindowContentConfig> = {
 
   work: {
     title: "Work",
+    type: "program",
     icon: "/assets/icons/work.png",
     windowId: "work-window",
     content: `
@@ -101,6 +105,7 @@ export const APP_CONTENT: Record<string, WindowContentConfig> = {
 
   about: {
     title: "About",
+    type: "program",
     icon: "/assets/icons/about.png",
     windowId: "about-window",
     content: `
@@ -136,6 +141,7 @@ export const APP_CONTENT: Record<string, WindowContentConfig> = {
 
   contact: {
     title: "Contact",
+    type: "program",
     icon: "/assets/icons/contact.png",
     windowId: "contact-window",
     content: `
@@ -167,6 +173,7 @@ export const APP_CONTENT: Record<string, WindowContentConfig> = {
 
   services: {
     title: "Services",
+    type: "program",
     icon: "/assets/icons/service.png",
     windowId: "services-window",
     content: `
@@ -214,6 +221,7 @@ export const APP_CONTENT: Record<string, WindowContentConfig> = {
 
   art: {
     title: "Art",
+    type: "program",
     icon: "/assets/icons/art.png",
     windowId: "art-window",
     content: `
@@ -240,6 +248,7 @@ export const APP_CONTENT: Record<string, WindowContentConfig> = {
 
   browser: {
     title: "Pixel Browser",
+    type: "browser",
     icon: "/assets/icons/browser.png",
     windowId: "browser-window",
     content: `
@@ -256,23 +265,11 @@ export const APP_CONTENT: Record<string, WindowContentConfig> = {
   },
 
   habits: {
-    title: "🎯 Habits 1/1",
+    title: "Habits",
+    type: "program",
     icon: "/assets/icons/habit.png",
     windowId: "habits-window",
-    content: `
-      <div class="retro-content">
-        <h2>🎯 Habit Tracker</h2>
-        <p>Track your daily habits and build positive routines with this retro-style habit tracker.</p>
-        <div class="stats-box">
-          <h3>Features</h3>
-          <p>• Track daily habits and streaks</p>
-          <p>• Quick add new habits</p>
-          <p>• Progress tracking</p>
-          <p>• Celebration animations</p>
-          <p>• Local storage persistence</p>
-        </div>
-      </div>
-    `,
+    content: "", // No HTML content needed as it uses a custom component
     defaultSize: { width: 400, height: 600 },
     desktopIcon: {
       label: "Habits",
@@ -282,6 +279,7 @@ export const APP_CONTENT: Record<string, WindowContentConfig> = {
 
   games: {
     title: "Games",
+    type: "game",
     icon: "/assets/icons/game.png",
     windowId: "games-window",
     content: "", // No HTML content needed as it uses a custom component
@@ -294,6 +292,7 @@ export const APP_CONTENT: Record<string, WindowContentConfig> = {
 
   snake: {
     title: "Snake Game",
+    type: "game",
     icon: "/assets/icons/Letter S Yellow_Blue.png",
     windowId: "snake-window",
     content: "", // Uses game component
@@ -302,6 +301,7 @@ export const APP_CONTENT: Record<string, WindowContentConfig> = {
 
   pong: {
     title: "Pong Game",
+    type: "game",
     icon: "/assets/icons/Circle_Blue.png",
     windowId: "pong-window",
     content: "", // Uses game component
@@ -310,6 +310,7 @@ export const APP_CONTENT: Record<string, WindowContentConfig> = {
 
   memory: {
     title: "Memory Game",
+    type: "game",
     icon: "/assets/icons/Letter M Yellow_Blue.png",
     windowId: "memory-window",
     content: "", // Uses game component
@@ -318,6 +319,7 @@ export const APP_CONTENT: Record<string, WindowContentConfig> = {
 
   breakout: {
     title: "Breakout Game",
+    type: "game",
     icon: "/assets/icons/Letter B Yellow_Blue.png",
     windowId: "breakout-window",
     content: "", // Uses game component

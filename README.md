@@ -1,70 +1,140 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Lufutu.com - Retro Windows Portfolio
 
-## Getting Started
+A nostalgic Windows 95/98-inspired portfolio website built with Next.js, React, TypeScript, and TailwindCSS. Experience the charm of the classic Windows interface with modern web technologies.
 
-First, run the development server:
+![Lufutu.com Preview](public/assets/icons/lufutu.png)
 
+## 🌟 Features
+
+### 🖥️ Classic Windows Interface
+- Authentic Windows 95/98 look and feel
+- Interactive desktop with draggable icons
+- Working taskbar with start menu
+- Window management system
+- Context menus (right-click functionality)
+
+### 🎮 Built-in Games
+- Snake
+- Pong
+- Breakout
+- Memory Game
+
+### 🎯 Widgets
+- Clock Widget
+- System Monitor
+- Weather Widget
+- Spotify Widget
+- Notes Widget
+- Habit Tracker
+- Hit Counter
+- Social Links
+
+### 🎨 Design Features
+- Retro pixel art aesthetics
+- Dithering patterns
+- Custom window decorations
+- Animated transitions
+- Multiple background options
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js 18+ or Bun
+- Git
+
+### Installation
+
+1. Clone the repository:
 ```bash
+git clone https://github.com/lufutu/lufutu.com.git
+cd lufutu.com
+```
+
+2. Install dependencies:
+```bash
+# Using npm
+npm install
+
+# Using Bun (recommended)
+bun install
+```
+
+3. Start the development server:
+```bash
+# Using npm
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
+
+# Using Bun
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🛠️ Built With
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- [Next.js 14](https://nextjs.org/) - React Framework
+- [TypeScript](https://www.typescriptlang.org/) - Type Safety
+- [TailwindCSS](https://tailwindcss.com/) - Styling
+- [Shadcn/ui](https://ui.shadcn.com/) - UI Components
+- [Radix UI](https://www.radix-ui.com/) - Accessible Components
 
-## Learn More
+## 📱 Features in Detail
 
-To learn more about Next.js, take a look at the following resources:
+### System Monitor Widget
+- Real-time system information display
+- CPU, RAM, and Disk usage monitoring
+- Auto-updates every 3 seconds
+- Fallback to simulated data if needed
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Window Management
+- Drag and drop windows
+- Minimize/Maximize/Close functionality
+- Window focus management
+- Z-index ordering
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Game Center
+- Multiple classic games
+- High score tracking
+- Pixel-perfect controls
+- Retro sound effects
 
-## Deploy on Vercel
+### Habit Tracker
+- Daily habit tracking
+- Progress visualization
+- Persistent storage
+- Achievement system
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🎨 Customization
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Backgrounds
+The project includes various pixel art backgrounds located in `public/assets/backgrounds/`. To change the background:
 
-## System Monitor Widget
+1. Add your background image to the backgrounds folder
+2. Update the background selection in the settings
 
-The System Monitor widget now displays **real-time system information** from your machine:
+### Icons
+Custom desktop icons can be added by:
 
-### Features
-- **Real CPU Usage**: Current CPU load percentage
-- **Real RAM Usage**: Memory utilization percentage  
-- **Real Disk Usage**: Primary disk space utilization
-- **Live Updates**: Refreshes every 3 seconds
-- **Fallback System**: Gracefully falls back to simulated data if system access fails
+1. Adding icon images to `public/assets/icons/`
+2. Updating the icon configuration in `lib/window-content.ts`
 
-### Technical Implementation
-- **API Endpoint**: `/api/system` - Returns current system metrics
-- **System Library**: Uses `systeminformation` package for accurate readings
-- **Fallback**: Uses Node.js built-in `os` module as backup
-- **Real-time**: Widget updates automatically every 3 seconds
-- **Visual Indicator**: Green pulsing dot shows live data status
+## 📝 License
 
-### API Response Format
-```json
-{
-  "success": true,
-  "data": {
-    "cpu": 46,
-    "ram": 78,
-    "disk": 45
-  },
-  "timestamp": "2025-07-02T07:09:38.193Z"
-}
-```
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-### Testing
-Test the API directly: `curl http://localhost:3000/api/system`
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📧 Contact
+
+Your Name - [@yourusername](https://twitter.com/yourusername)
+
+Project Link: [https://github.com/yourusername/lufutu.com](https://github.com/yourusername/lufutu.com)
+
+## 🙏 Acknowledgments
+
+- Inspired by Windows 95/98 UI
+- Pixel art backgrounds from various artists
+- [AdamCYounis](https://lospec.com/adamcyounis) color palettes
+- All the amazing open-source libraries used in this project

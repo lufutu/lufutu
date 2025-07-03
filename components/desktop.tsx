@@ -29,42 +29,49 @@ export function Desktop({ settings, setSettings, mediaControlsRefs }: DesktopPro
     handleIframeError
   } = mediaControlsRefs
 
+  // Ensure background image path is correct
+  const backgroundImageUrl = settings.backgroundImage 
+    ? `/assets/backgrounds/${settings.backgroundImage}`
+    : '/assets/backgrounds/coffee_in_rain_by.webp'
+
+  console.log('Using background image:', backgroundImageUrl)
+
   return (
     <div className="video-background">
-      {/* YouTube Video Background */}
+      {/* Background Image Layer (Always Present) */}
+      <div 
+        className="absolute inset-0"
+        style={{
+          backgroundImage: `url('${backgroundImageUrl}')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          zIndex: -2
+        }}
+        onError={(e: any) => {
+          console.error('Failed to load background:', backgroundImageUrl)
+          e.currentTarget.style.backgroundImage = "url('/assets/backgrounds/coffee_in_rain_by.webp')"
+        }}
+      />
+
+      {/* YouTube Video Layer */}
       {isUsingYoutube && !hasError && isLoaded && (
-        <iframe
-          ref={iframeRef}
-          id={`youtube-player-${settings.youtubeUrl}`}
-          src={getYouTubeEmbedUrl(settings.youtubeUrl)}
-          title="Background Video"
-          allow="autoplay; encrypted-media; picture-in-picture"
-          allowFullScreen={false}
-          loading="lazy"
-          referrerPolicy="strict-origin-when-cross-origin"
-          sandbox="allow-scripts allow-same-origin allow-presentation"
-          onError={handleIframeError}
-          onLoad={() => console.log('YouTube video background loaded successfully')}
-        />
-      )}
-      
-      {/* Default Background Image */}
-      {!isUsingYoutube && (
-        <div 
-          className="default-background"
-          style={{
-            backgroundImage: 'url(/assets/backgrounds/coffee_in_rain_by.webp)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            zIndex: -1
-          }}
-        />
+        <div className="absolute inset-0" style={{ zIndex: -1 }}>
+          <iframe
+            ref={iframeRef}
+            id={`youtube-player-${settings.youtubeUrl}`}
+            src={getYouTubeEmbedUrl(settings.youtubeUrl)}
+            title="Background Video"
+            className="w-full h-full"
+            allow="autoplay; encrypted-media; picture-in-picture"
+            allowFullScreen={false}
+            loading="lazy"
+            referrerPolicy="strict-origin-when-cross-origin"
+            sandbox="allow-scripts allow-same-origin allow-presentation"
+            onError={handleIframeError}
+            onLoad={() => console.log('YouTube video background loaded successfully')}
+          />
+        </div>
       )}
       
       {/* Background Audio for Default Mode */}
@@ -76,10 +83,6 @@ export function Desktop({ settings, setSettings, mediaControlsRefs }: DesktopPro
           playsInline
           loop
           crossOrigin="anonymous"
-          onLoadStart={() => console.log('Audio loading started')}
-          onLoadedMetadata={() => console.log('Audio metadata loaded')}
-          onCanPlay={() => console.log('Audio can play event')}
-          onError={(e) => console.error('Audio element error:', e)}
         />
       )}
       

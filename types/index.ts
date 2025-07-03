@@ -65,6 +65,7 @@ export interface Settings {
   fontSize: number
   theme: string
   spotifyUrl: string
+  backgroundImage: string
 }
 
 export interface GameState {

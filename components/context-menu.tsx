@@ -1,8 +1,9 @@
 "use client"
 
-import type React from "react"
+import React from "react"
 
 import type { ContextMenu as ContextMenuType, Settings, Widget } from "@/types"
+import { PropertiesDialog } from "./dialog"
 
 interface ContextMenuProps {
   contextMenu: ContextMenuType
@@ -21,6 +22,8 @@ export function ContextMenu({
   setWidgets,
   setDialog,
 }: ContextMenuProps) {
+  const [showProperties, setShowProperties] = React.useState(false)
+
   const showDialog = (type: string, title: string, content: string, initialValue = "") => {
     setDialog({
       visible: true,
@@ -35,13 +38,8 @@ export function ContextMenu({
     setContextMenu({ visible: false, x: 0, y: 0 })
 
     switch (action) {
-      case "change-background":
-        showDialog(
-          "change-background",
-          "Change Background Video",
-          "Enter YouTube video ID (e.g., 'bvrqfCKN8zc'):",
-          settings.youtubeUrl,
-        )
+      case "properties":
+        setShowProperties(true)
         break
       case "change-spotify":
         showDialog(
@@ -70,31 +68,51 @@ export function ContextMenu({
     }
   }
 
-  if (!contextMenu.visible) return null
+  const handleCloseProperties = () => {
+    setShowProperties(false)
+  }
+
+  if (!contextMenu.visible && !showProperties) return null
 
   return (
-    <div
-      className="context-menu"
-      style={{
-        left: contextMenu.x,
-        top: contextMenu.y,
-      }}
-    >
-      <div className="context-menu-item" onClick={() => handleContextMenuClick("change-background")}>
-        🎥 Change Background Video
-      </div>
-      <div className="context-menu-item" onClick={() => handleContextMenuClick("change-spotify")}>
-        🎵 Change Spotify Content
-      </div>
-      <div className="context-menu-item" onClick={() => handleContextMenuClick("increase-font")}>
-        🔍 Increase Font Size
-      </div>
-      <div className="context-menu-item" onClick={() => handleContextMenuClick("decrease-font")}>
-        🔍 Decrease Font Size
-      </div>
-      <div className="context-menu-item" onClick={() => handleContextMenuClick("refresh-widgets")}>
-        🔄 Refresh Widgets
-      </div>
-    </div>
+    <>
+      {contextMenu.visible && (
+        <div
+          className="fixed bg-[#c0c0c0] border border-white shadow-md py-1 min-w-[200px]"
+          style={{
+            left: contextMenu.x,
+            top: contextMenu.y,
+            zIndex: 30000,
+          }}
+        >
+          <div 
+            className="px-8 py-1 hover:bg-[#000080] hover:text-white cursor-default"
+            onClick={() => handleContextMenuClick("refresh-widgets")}
+          >
+            Arrange Icons
+          </div>
+          <div 
+            className="px-8 py-1 hover:bg-[#000080] hover:text-white cursor-default"
+            onClick={() => handleContextMenuClick("refresh-widgets")}
+          >
+            Line up Icons
+          </div>
+          <div className="border-t border-[#808080] my-1" />
+          <div 
+            className="px-8 py-1 hover:bg-[#000080] hover:text-white cursor-default"
+            onClick={() => handleContextMenuClick("properties")}
+          >
+            Properties
+          </div>
+        </div>
+      )}
+
+      <PropertiesDialog 
+        visible={showProperties}
+        onClose={handleCloseProperties}
+        settings={settings}
+        setSettings={setSettings}
+      />
+    </>
   )
 }
