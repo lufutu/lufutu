@@ -28,14 +28,15 @@ export const APP_CONTENT: Record<string, WindowContentConfig> = {
     content: `
       <div class="retro-content">
         <h2>Welcome to My Digital Space</h2>
-        <p>Hey there! I'm Truong Vu Tu, a passionate full-stack developer with 15+ years of experience creating digital solutions that bridge functionality and innovation.</p>
+        <p>Hey there! I'm Tu Truong, a passionate full-stack developer with 15+ years of experience creating digital solutions that bridge functionality and innovation.</p>
         <div class="stats-box">
-          <h3>Quick Stats</h3>
-          <p>• 15+ Years Experience</p>
-          <p>• 100+ Projects Delivered</p>
-          <p>• Full-Stack Development</p>
-          <p>• Technical Leadership</p>
-          <p>• Startup Experience</p>
+          <h3 class="text-lg font-bold text-pink-500">Quick Stats</h3>
+          <p>• Years of Experience: 5+</p>
+          <p>• Projects Completed: 50+</p>
+          <p>• Coffee Consumed: ∞</p>
+          <p>• Lines of Code: 100,000+</p>
+          <p>• Games Added: 4+ 🎮</p>
+          <p>• Startup Experience: 2+</p>
         </div>
       </div>
     `,
