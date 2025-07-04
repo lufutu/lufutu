@@ -268,15 +268,26 @@ export const WidgetManager = React.memo(({ widgets, setWidgets, handleMouseDown,
     return widgets.map((widget, index) => (
       <div
         key={widget.id}
-        className={`widget widget-${widget.type} widget-index-${index}`}
+        className={`widget widget-${widget.type} widget-index-${index} select-none cursor-move`}
         style={{
+          position: 'absolute',
           left: widget.x,
           top: widget.y,
           width: widget.width,
           height: widget.height,
+          zIndex: 200,
+          userSelect: 'none',
+          WebkitUserSelect: 'none',
+          touchAction: 'none',
         }}
-        onMouseDown={(e) => handleMouseDown(e, "widget", widget.id)}
-        onTouchStart={(e) => handleTouchStart?.(e, "widget", widget.id)}
+        onMouseDown={(e) => {
+          e.preventDefault()
+          handleMouseDown(e, "widget", widget.id)
+        }}
+        onTouchStart={(e) => {
+          e.preventDefault()
+          handleTouchStart?.(e, "widget", widget.id)
+        }}
       >
         {renderWidget(widget)}
       </div>

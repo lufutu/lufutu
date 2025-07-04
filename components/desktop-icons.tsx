@@ -33,6 +33,9 @@ export const DesktopIcons: React.FC<DesktopIconsProps> = ({
   // Grid settings
   const GRID_CELL_SIZE = 100 // Size of each grid cell
   const GRID_CELL_SPACING = 20 // Horizontal spacing between grid cells
+  const GRID_CELL_VERTICAL_SPACING = 40 // Vertical spacing between grid cells
+  const GRID_MARGIN_LEFT = 10 // Left margin from screen edge
+  const GRID_MARGIN_TOP = 40 // Top margin from screen edge
   const TASKBAR_HEIGHT = 40 // Height of the taskbar
 
   const snapToGrid = React.useCallback((x: number, y: number) => {
@@ -40,9 +43,11 @@ export const DesktopIcons: React.FC<DesktopIconsProps> = ({
     const desktop = desktopRef.current?.getBoundingClientRect()
     if (!desktop) return { row: 0, column: 0 }
 
-    // Calculate grid position with spacing
-    const column = Math.max(0, Math.min(Math.floor(x / (GRID_CELL_SIZE + GRID_CELL_SPACING)), 7))
-    const row = Math.max(0, Math.floor(y / GRID_CELL_SIZE))
+    // Calculate grid position with spacing and margins
+    const adjustedX = x - GRID_MARGIN_LEFT
+    const adjustedY = y - GRID_MARGIN_TOP
+    const column = Math.max(0, Math.min(Math.floor(adjustedX / (GRID_CELL_SIZE + GRID_CELL_SPACING)), 7))
+    const row = Math.max(0, Math.floor(adjustedY / (GRID_CELL_SIZE + GRID_CELL_VERTICAL_SPACING)))
 
     return { row, column }
   }, [])
@@ -107,7 +112,7 @@ export const DesktopIcons: React.FC<DesktopIconsProps> = ({
     if (handleTouchStart) {
       handleTouchStart(e, "icon", icon.id)
     } else {
-      handleMouseDown(e as unknown as React.MouseEvent, "icon", icon.id)
+    handleMouseDown(e as unknown as React.MouseEvent, "icon", icon.id)
     }
   }
 
@@ -182,8 +187,8 @@ export const DesktopIcons: React.FC<DesktopIconsProps> = ({
       {icons.map((icon) => {
         const style: React.CSSProperties = {
           position: 'absolute',
-          left: icon.gridPosition.column * (GRID_CELL_SIZE + GRID_CELL_SPACING),
-          top: icon.gridPosition.row * GRID_CELL_SIZE,
+          left: GRID_MARGIN_LEFT + icon.gridPosition.column * (GRID_CELL_SIZE + GRID_CELL_SPACING),
+          top: GRID_MARGIN_TOP + icon.gridPosition.row * (GRID_CELL_SIZE + GRID_CELL_VERTICAL_SPACING),
           width: GRID_CELL_SIZE,
           height: GRID_CELL_SIZE,
           transform: draggingIcon === icon.id ? 'scale(1.05)' : undefined,
@@ -198,7 +203,6 @@ export const DesktopIcons: React.FC<DesktopIconsProps> = ({
               desktop-icon flex flex-col items-center justify-center
               cursor-move rounded p-2 touch-none
               ${icon.selected ? 'bg-blue-500/20' : 'hover:bg-white/5'}
-              ml-8 mt-4
             `}
             style={style}
             onDoubleClick={() => handleDoubleClick(icon.id)}

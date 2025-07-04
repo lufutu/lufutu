@@ -34,8 +34,6 @@ export function Desktop({ settings, mediaControlsRefs }: DesktopProps) {
     ? `/assets/backgrounds/${settings.backgroundImage}`
     : '/assets/backgrounds/coffee_in_rain_by.webp'
 
-  console.log('Using background image:', backgroundImageUrl)
-
   return (
     <div className="video-background">
       {/* Background Image Layer (Always Present) */}

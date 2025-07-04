@@ -160,7 +160,7 @@ export function PropertiesDialog({ visible, onClose, settings, setSettings }: Pr
 
   // Add effect to log settings changes
   React.useEffect(() => {
-    console.log('Settings changed:', settings)
+    // console.log('Settings changed:', settings)
   }, [settings])
 
   if (!visible) return null
